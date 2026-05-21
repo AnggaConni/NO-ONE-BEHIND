@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard GIS Disabilitas Inklusif</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Leaflet CSS & JS for GIS Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        google: {
+                            blue: '#1a73e8',
+                            blueLight: '#e8f0fe',
+                            red: '#ea4335',
+                            yellow: '#fbbc04',
+                            green: '#34a853',
+                            gray: '#5f6368',
+                            dark: '#202124',
+                            bg: '#f8f9fa',
+                            border: '#dadce0'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        
+        /* Google Workspace style sidebar active state */
+        .sidebar-item { transition: all 0.2s; border-radius: 0 100px 100px 0; margin-right: 16px; }
+        .sidebar-item.active { background-color: #e8f0fe; color: #1a73e8; font-weight: 600; }
+        .sidebar-item:hover:not(.active) { background-color: #f1f3f4; }
+        
+        /* Google UI Card style */
+        .g-card {
+            background: #ffffff;
+            border: 1px solid #dadce0;
+            border-radius: 12px;
+            box-shadow: none;
+            transition: box-shadow 0.2s;
+        }
+        .g-card:hover {
+            box-shadow: 0 1px 3px 0 rgba(60,64,67,0.3), 0 4px 8px 3px rgba(60,64,67,0.15);
+        }
+
+        /* Leaflet map fix for Tailwind */
+        #map { z-index: 10; border-radius: 12px; }
+
+        /* Modal Transitions */
+        #facilityModal {
+            transition: opacity 0.3s ease-in-out;
+        }
+        #modalContent {
+            transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+        }
+        .modal-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .modal-hidden #modalContent {
+            transform: scale(0.95) translateY(-20px);
+            opacity: 0;
+        }
+        .modal-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-visible #modalContent {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="text-google-dark flex h-screen overflow-hidden">
+
+    <!-- Sidebar (Google Material 3 Style) -->
+    <aside class="w-64 bg-white border-r border-google-border flex flex-col hidden md:flex shrink-0 z-20">
+        <div class="h-16 flex items-center px-6 border-b border-google-border">
+            <div class="w-8 h-8 rounded text-white bg-google-blue flex items-center justify-center mr-3 shadow-sm">
+                <i class="fa-solid fa-earth-asia"></i>
+            </div>
+            <span class="text-xl font-medium tracking-tight text-google-dark">GeoInklusif</span>
+        </div>
+        
+        <div class="py-4 flex-grow overflow-y-auto">
+            <a href="index.html" class="sidebar-item flex items-center px-6 py-3 text-google-gray mb-1">
+                <i class="fa-solid fa-arrow-left w-6"></i>
+                <span class="text-sm">Kembali ke Portal</span>
+            </a>
+            
+            <div class="px-6 py-2 mt-2 text-xs font-semibold text-google-gray uppercase tracking-wider">Pemetaan</div>
+            
+            <a href="#" class="sidebar-item active flex items-center px-6 py-3 mb-1">
+                <i class="fa-solid fa-map-location-dot w-6 text-google-blue"></i>
+                <span class="text-sm">Peta Inklusivitas</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-6 py-3 text-google-gray mb-1">
+                <i class="fa-solid fa-school w-6"></i>
+                <span class="text-sm">Sekolah & Pendidikan</span>
+            </a>
+            <a href="#" class="sidebar-item flex items-center px-6 py-3 text-google-gray mb-1">
+                <i class="fa-solid fa-building w-6"></i>
+                <span class="text-sm">Organisasi & Publik</span>
+            </a>
+            
+            <div class="px-6 py-2 mt-4 text-xs font-semibold text-google-gray uppercase tracking-wider">Analitik</div>
+            
+            <a href="#" class="sidebar-item flex items-center px-6 py-3 text-google-gray mb-1">
+                <i class="fa-solid fa-chart-line w-6"></i>
+                <span class="text-sm">Tren Data</span>
+            </a>
+        </div>
+
+        <div class="p-4 border-t border-google-border">
+            <div class="flex items-center">
+                <img src="https://ui-avatars.com/api/?name=Admin+Pemda&background=1a73e8&color=fff" alt="User" class="w-9 h-9 rounded-full">
+                <div class="ml-3">
+                    <p class="text-sm font-medium text-google-dark leading-tight">Admin Pemda</p>
+                    <p class="text-xs text-google-gray">Dinas Sosial</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex flex-col h-screen overflow-hidden bg-google-bg relative">
+        
+        <!-- Topbar -->
+        <header class="h-16 bg-white border-b border-google-border flex items-center justify-between px-6 shrink-0 z-20">
+            <div class="flex items-center">
+                <button class="md:hidden mr-4 text-google-gray hover:text-google-dark">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <h1 class="text-xl font-medium text-google-dark">Monitoring GIS Disabilitas</h1>
+            </div>
+            
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden sm:block">
+                    <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-google-gray text-sm"></i>
+                    <input type="text" placeholder="Cari sekolah, jalan, fasilitas..." class="bg-google-bg border border-transparent focus:border-google-blue focus:bg-white rounded-lg pl-9 pr-4 py-2 text-sm w-64 outline-none transition-all placeholder-google-gray">
+                </div>
+                <button class="text-google-gray hover:text-google-dark relative">
+                    <i class="fa-regular fa-bell text-xl"></i>
+                    <span class="absolute -top-1 -right-1 w-2 h-2 bg-google-red rounded-full"></span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard Content Scrollable -->
+        <div class="flex-grow overflow-y-auto p-6 relative z-10">
+            
+            <!-- Key Metrics (KPIs) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+                <!-- KPI 1 -->
+                <div class="g-card p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-google-gray mb-1">Sekolah Inklusif</p>
+                            <h3 class="text-3xl font-normal text-google-dark mb-1">45<span class="text-lg text-google-gray">/120</span></h3>
+                            <div class="flex items-center text-xs text-google-green font-medium">
+                                <i class="fa-solid fa-arrow-up mr-1"></i> 12% dari tahun lalu
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-google-blue">
+                            <i class="fa-solid fa-school text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 2 -->
+                <div class="g-card p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-google-gray mb-1">Organisasi/Kantor Ramah</p>
+                            <h3 class="text-3xl font-normal text-google-dark mb-1">78<span class="text-lg text-google-gray">/200</span></h3>
+                            <div class="flex items-center text-xs text-google-green font-medium">
+                                <i class="fa-solid fa-arrow-up mr-1"></i> 5% dari bulan lalu
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-google-green">
+                            <i class="fa-solid fa-briefcase text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 3 -->
+                <div class="g-card p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-google-gray mb-1">Skor Aksesibilitas Kota</p>
+                            <h3 class="text-3xl font-normal text-google-dark mb-1">68<span class="text-lg text-google-gray">/100</span></h3>
+                            <div class="flex items-center text-xs text-google-yellow font-medium">
+                                <i class="fa-solid fa-minus mr-1"></i> Stabil (Menengah)
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-yellow-50 flex items-center justify-center text-google-yellow">
+                            <i class="fa-solid fa-wheelchair text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- KPI 4 -->
+                <div class="g-card p-5">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-google-gray mb-1">Pengaduan Fasilitas</p>
+                            <h3 class="text-3xl font-normal text-google-dark mb-1">12</h3>
+                            <div class="flex items-center text-xs text-google-red font-medium">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Perlu tindak lanjut
+                            </div>
+                        </div>
+                        <div class="w-10 h-10 rounded-full bg-red-50 flex items-center justify-center text-google-red">
+                            <i class="fa-solid fa-bullhorn text-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main GIS & Chart Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                
+                <!-- GIS Map -->
+                <div class="g-card flex flex-col lg:col-span-2 overflow-hidden h-[500px]">
+                    <div class="px-5 py-4 border-b border-google-border flex justify-between items-center bg-white z-20">
+                        <h2 class="text-base font-medium text-google-dark">Peta Aksesibilitas Spasial</h2>
+                        <div class="flex space-x-2">
+                            <span class="flex items-center text-xs text-google-gray"><span class="w-3 h-3 rounded-full bg-google-green mr-1"></span> Sudah Inklusif</span>
+                            <span class="flex items-center text-xs text-google-gray ml-3"><span class="w-3 h-3 rounded-full bg-google-yellow mr-1"></span> Parsial</span>
+                            <span class="flex items-center text-xs text-google-gray ml-3"><span class="w-3 h-3 rounded-full bg-google-red mr-1"></span> Belum Inklusif</span>
+                        </div>
+                    </div>
+                    <div id="map" class="w-full flex-grow relative z-0"></div>
+                </div>
+
+                <!-- Chart -->
+                <div class="g-card flex flex-col h-[500px]">
+                    <div class="px-5 py-4 border-b border-google-border bg-white">
+                        <h2 class="text-base font-medium text-google-dark">Status Fasilitas Berdasarkan Tipe</h2>
+                    </div>
+                    <div class="p-5 flex-grow flex items-center justify-center relative">
+                        <canvas id="complianceChart"></canvas>
+                    </div>
+                    <div class="p-4 border-t border-google-border bg-google-bg text-xs text-google-gray">
+                        *Data ditarik dari hasil audit WHODAS & Penilaian Fasilitas bulan terakhir.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="g-card overflow-hidden">
+                <div class="px-5 py-4 border-b border-google-border flex justify-between items-center bg-white">
+                    <h2 class="text-base font-medium text-google-dark">Direktori Fasilitas Publik</h2>
+                    <button class="text-google-blue text-sm font-medium hover:bg-google-blueLight px-3 py-1.5 rounded transition-colors">
+                        Lihat Semua
+                    </button>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-google-bg text-google-gray border-b border-google-border">
+                            <tr>
+                                <th class="px-5 py-3 font-medium">Nama Institusi/Fasilitas</th>
+                                <th class="px-5 py-3 font-medium">Kategori</th>
+                                <th class="px-5 py-3 font-medium">Fasilitas Khusus</th>
+                                <th class="px-5 py-3 font-medium">Status Audit</th>
+                                <th class="px-5 py-3 font-medium">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-google-border bg-white">
+                            <tr class="hover:bg-google-bg transition-colors">
+                                <td class="px-5 py-3 font-medium text-google-dark flex items-center">
+                                    <div class="w-8 h-8 rounded bg-blue-50 text-google-blue flex items-center justify-center mr-3"><i class="fa-solid fa-school"></i></div>
+                                    SDN 01 Percontohan
+                                </td>
+                                <td class="px-5 py-3 text-google-gray">Pendidikan Dasar</td>
+                                <td class="px-5 py-3">
+                                    <div class="flex space-x-1">
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Akses Kursi Roda"><i class="fa-solid fa-wheelchair"></i></span>
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Guru Pendamping Khusus (GPK)"><i class="fa-solid fa-chalkboard-user"></i></span>
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Toilet Difabel"><i class="fa-solid fa-restroom"></i></span>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 border border-green-200">Sangat Inklusif</span>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <button onclick="openModal('sdn01')" class="text-google-blue hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">Lihat Detail</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-google-bg transition-colors">
+                                <td class="px-5 py-3 font-medium text-google-dark flex items-center">
+                                    <div class="w-8 h-8 rounded bg-indigo-50 text-indigo-500 flex items-center justify-center mr-3"><i class="fa-solid fa-building"></i></div>
+                                    Kantor Walikota
+                                </td>
+                                <td class="px-5 py-3 text-google-gray">Instansi Pemerintah</td>
+                                <td class="px-5 py-3">
+                                    <div class="flex space-x-1">
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Akses Kursi Roda"><i class="fa-solid fa-wheelchair"></i></span>
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Lift Bersuara"><i class="fa-solid fa-elevator"></i></span>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 border border-green-200">Sangat Inklusif</span>
+                                </td>
+                                 <td class="px-5 py-3">
+                                    <button onclick="openModal('walikota')" class="text-google-blue hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">Lihat Detail</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-google-bg transition-colors">
+                                <td class="px-5 py-3 font-medium text-google-dark flex items-center">
+                                    <div class="w-8 h-8 rounded bg-yellow-50 text-google-yellow flex items-center justify-center mr-3"><i class="fa-solid fa-store"></i></div>
+                                    Pasar Induk Daerah
+                                </td>
+                                <td class="px-5 py-3 text-google-gray">Fasilitas Publik</td>
+                                <td class="px-5 py-3">
+                                    <div class="flex space-x-1">
+                                        <span class="inline-flex w-6 h-6 items-center justify-center bg-slate-100 rounded text-slate-500" title="Guiding Block (Sebagian)"><i class="fa-solid fa-ellipsis"></i></span>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800 border border-yellow-200">Parsial / Sedang Revisi</span>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <button onclick="openModal('pasar')" class="text-google-blue hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">Lihat Detail</button>
+                                </td>
+                            </tr>
+                            <tr class="hover:bg-google-bg transition-colors">
+                                <td class="px-5 py-3 font-medium text-google-dark flex items-center">
+                                    <div class="w-8 h-8 rounded bg-blue-50 text-google-blue flex items-center justify-center mr-3"><i class="fa-solid fa-school"></i></div>
+                                    SMA Negeri 3
+                                </td>
+                                <td class="px-5 py-3 text-google-gray">Pendidikan Menengah</td>
+                                <td class="px-5 py-3 text-google-gray text-xs italic">Belum ada data fasilitas</td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800 border border-red-200">Belum Inklusif</span>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <button onclick="openModal('sman3')" class="text-google-blue hover:text-blue-800 font-medium px-2 py-1 rounded hover:bg-blue-50 transition-colors">Lihat Detail</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <footer class="mt-8 text-center text-xs text-google-gray">
+                &copy; 2026 Sistem Data Inklusif Daerah (SIDANIDA).
+            </footer>
+        </div>
+        
+        <!-- Modal Overlay -->
+        <div id="facilityModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-50 flex items-center justify-center modal-hidden backdrop-blur-sm">
+            <!-- Modal Content -->
+            <div id="modalContent" class="bg-white rounded-xl shadow-2xl w-full max-w-2xl mx-4 overflow-hidden flex flex-col max-h-[90vh]">
+                
+                <!-- Modal Header -->
+                <div class="px-6 py-4 border-b border-google-border flex justify-between items-center bg-gray-50">
+                    <h2 class="text-xl font-semibold text-google-dark flex items-center">
+                        <i id="modalIcon" class="fa-solid fa-school text-google-blue mr-3"></i>
+                        <span id="modalTitle">Detail Fasilitas</span>
+                    </h2>
+                    <button onclick="closeModal()" class="text-google-gray hover:text-google-dark p-2 rounded-full hover:bg-gray-200 transition-colors">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body (Scrollable) -->
+                <div class="p-6 overflow-y-auto">
+                    <div class="flex flex-col md:flex-row gap-6 mb-6">
+                        <!-- Image Placeholder -->
+                        <div class="w-full md:w-1/3 aspect-video bg-gray-200 rounded-lg flex items-center justify-center relative overflow-hidden">
+                            <img src="https://ui-avatars.com/api/?name=Fasilitas&background=1a73e8&color=fff&size=200" alt="Fasilitas" class="absolute inset-0 w-full h-full object-cover opacity-20">
+                            <i class="fa-solid fa-image text-4xl text-gray-400 z-10"></i>
+                        </div>
+                        
+                        <!-- Quick Info -->
+                        <div class="w-full md:w-2/3">
+                            <div class="mb-4">
+                                <span class="text-xs font-semibold text-google-gray uppercase tracking-wider">Kategori</span>
+                                <p id="modalCategory" class="text-google-dark font-medium">Pendidikan Dasar</p>
+                            </div>
+                            <div class="mb-4">
+                                <span class="text-xs font-semibold text-google-gray uppercase tracking-wider">Status Aksesibilitas</span>
+                                <div id="modalStatusContainer" class="mt-1">
+                                   <!-- Status Badge Injected Here -->
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs font-semibold text-google-gray uppercase tracking-wider">Skor Audit Terakhir</span>
+                                <div class="flex items-center mt-1">
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mr-3">
+                                        <div id="modalScoreBar" class="bg-google-green h-2.5 rounded-full" style="width: 85%"></div>
+                                    </div>
+                                    <span id="modalScoreText" class="text-sm font-bold text-google-dark">85/100</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Facilities Checklist -->
+                    <h3 class="text-sm font-semibold text-google-dark border-b border-google-border pb-2 mb-4">Rincian Fasilitas Inklusif</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-6 text-sm" id="modalChecklist">
+                        <!-- Checklist Items Injected Here -->
+                    </div>
+                    
+                    <!-- Notes -->
+                    <div class="mt-6 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                        <h4 class="text-xs font-bold text-yellow-800 uppercase mb-1"><i class="fa-solid fa-clipboard-list mr-1"></i> Catatan Auditor</h4>
+                        <p id="modalNotes" class="text-sm text-yellow-900">Ramp pada pintu utama sudah sesuai standar kemiringan. Namun toilet difabel perlu perbaikan pada pegangan (handrail).</p>
+                    </div>
+
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="px-6 py-4 border-t border-google-border bg-gray-50 flex justify-end">
+                    <button onclick="closeModal()" class="px-4 py-2 bg-white border border-google-border text-google-dark rounded hover:bg-gray-100 font-medium transition-colors">Tutup</button>
+                    <button class="ml-3 px-4 py-2 bg-google-blue text-white rounded hover:bg-blue-700 font-medium transition-colors shadow-sm">Unduh Laporan PDF</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- 1. INISIALISASI LEAFLET GIS MAP ---
+        // Menggunakan koordinat dummy (Contoh: Pusat Jakarta)
+        const map = L.map('map', { zoomControl: false }).setView([-6.2088, 106.8456], 13);
+        
+        // Pindahkan kontrol zoom ke kanan bawah ala Google Maps
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Gunakan Tile dari OpenStreetMap dengan filter abu-abu agar terlihat clean & modern
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+
+        // Custom Icons untuk marker Leaflet
+        const greenIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#34a853; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.4);'></div>",
+            iconSize: [16, 16], iconAnchor: [8, 8]
+        });
+        
+        const redIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#ea4335; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.4);'></div>",
+            iconSize: [16, 16], iconAnchor: [8, 8]
+        });
+
+        const yellowIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: "<div style='background-color:#fbbc04; width:16px; height:16px; border-radius:50%; border:2px solid white; box-shadow: 0 0 4px rgba(0,0,0,0.4);'></div>",
+            iconSize: [16, 16], iconAnchor: [8, 8]
+        });
+
+        // Menambahkan Titik (Markers) Dummy Sekolah & Kantor
+        L.marker([-6.2000, 106.8400], {icon: greenIcon}).addTo(map)
+         .bindPopup('<b>SDN 01 Percontohan</b><br>Status: Sangat Inklusif<br><button onclick="openModal(\'sdn01\')" class="text-google-blue text-xs font-medium hover:underline mt-1">Lihat Detail Audit</button>');
+         
+        L.marker([-6.2150, 106.8500], {icon: greenIcon}).addTo(map)
+         .bindPopup('<b>Kantor Walikota</b><br>Status: Sangat Inklusif<br><button onclick="openModal(\'walikota\')" class="text-google-blue text-xs font-medium hover:underline mt-1">Lihat Detail Audit</button>');
+         
+        L.marker([-6.2050, 106.8600], {icon: yellowIcon}).addTo(map)
+         .bindPopup('<b>Pasar Induk</b><br>Status: Parsial<br><button onclick="openModal(\'pasar\')" class="text-google-blue text-xs font-medium hover:underline mt-1">Lihat Detail Audit</button>');
+         
+        L.marker([-6.1900, 106.8300], {icon: redIcon}).addTo(map)
+         .bindPopup('<b>SMA Negeri 3</b><br>Status: Belum Inklusif<br><button onclick="openModal(\'sman3\')" class="text-google-blue text-xs font-medium hover:underline mt-1">Lihat Detail Audit</button>');
+
+        L.marker([-6.2200, 106.8350], {icon: greenIcon}).addTo(map)
+         .bindPopup('<b>Perpustakaan Daerah</b><br>Status: Sangat Inklusif<br>Fasilitas: Buku Braille, Ramp.');
+
+         
+        // --- 2. INISIALISASI CHART.JS ---
+        const ctx = document.getElementById('complianceChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Sangat Inklusif', 'Parsial / Perbaikan', 'Belum Inklusif'],
+                datasets: [{
+                    data: [45, 35, 20],
+                    backgroundColor: [
+                        '#34a853', // Green
+                        '#fbbc04', // Yellow
+                        '#ea4335'  // Red
+                    ],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%', // Ketebalan donut
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            usePointStyle: true,
+                            padding: 20,
+                            font: { family: 'Inter', size: 12 }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: '#202124',
+                        titleFont: { family: 'Inter' },
+                        bodyFont: { family: 'Inter' }
+                    }
+                }
+            },
+            // Menambahkan tulisan di tengah Donut
+            plugins: [{
+                id: 'textCenter',
+                beforeDraw: function(chart) {
+                    var width = chart.width,
+                        height = chart.height,
+                        ctx = chart.ctx;
+
+                    ctx.restore();
+                    var fontSize = (height / 120).toFixed(2);
+                    ctx.font = "bold " + fontSize + "em Inter";
+                    ctx.textBaseline = "middle";
+                    ctx.fillStyle = "#202124";
+
+                    var text = "123", // Total audit
+                        textX = Math.round((width - ctx.measureText(text).width) / 2),
+                        textY = height / 2.3;
+
+                    ctx.fillText(text, textX, textY);
+                    
+                    ctx.font = "normal " + (fontSize*0.4) + "em Inter";
+                    ctx.fillStyle = "#5f6368";
+                    var text2 = "Total Fasilitas";
+                    var text2X = Math.round((width - ctx.measureText(text2).width) / 2);
+                    ctx.fillText(text2, text2X, textY + 25);
+                    ctx.save();
+                }
+            }]
+        });
+
+        // --- 3. MODAL LOGIC & DATA DUMMY ---
+        const facilityData = {
+            'sdn01': {
+                title: 'SDN 01 Percontohan',
+                icon: 'fa-school',
+                category: 'Pendidikan Dasar',
+                status: 'Sangat Inklusif',
+                statusClass: 'bg-green-100 text-green-800 border-green-200',
+                score: 88,
+                scoreColor: 'bg-google-green',
+                notes: 'Secara umum sudah sangat baik. Guru Pendamping Khusus (GPK) aktif. Ramp kursi roda tersedia di seluruh lantai 1. Lift untuk ke lantai 2 berfungsi baik.',
+                checklist: [
+                    { label: 'Akses Kursi Roda (Ramp)', check: true },
+                    { label: 'Toilet Difabel', check: true },
+                    { label: 'Guru Pendamping Khusus', check: true },
+                    { label: 'Materi Belajar Braille/Audio', check: false },
+                    { label: 'Guiding Block (Jalur Tunanetra)', check: true },
+                    { label: 'Ruang Sensorik Integrasi', check: true }
+                ]
+            },
+            'walikota': {
+                title: 'Kantor Walikota',
+                icon: 'fa-building',
+                category: 'Instansi Pemerintah',
+                status: 'Sangat Inklusif',
+                statusClass: 'bg-green-100 text-green-800 border-green-200',
+                score: 92,
+                scoreColor: 'bg-google-green',
+                notes: 'Telah memenuhi standar gedung ramah difabel. Lift dilengkapi tombol braille dan suara indikator lantai. Loket pelayanan khusus difabel tersedia di lantai dasar.',
+                checklist: [
+                    { label: 'Akses Kursi Roda (Ramp)', check: true },
+                    { label: 'Toilet Difabel', check: true },
+                    { label: 'Lift Bersuara & Braille', check: true },
+                    { label: 'Loket Pelayanan Khusus', check: true },
+                    { label: 'Guiding Block (Jalur Tunanetra)', check: true },
+                    { label: 'Parkir Khusus Difabel', check: true }
+                ]
+            },
+            'pasar': {
+                title: 'Pasar Induk Daerah',
+                icon: 'fa-store',
+                category: 'Fasilitas Publik',
+                status: 'Parsial / Sedang Revisi',
+                statusClass: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                score: 55,
+                scoreColor: 'bg-google-yellow',
+                notes: 'Akses masuk utama bisa dilalui kursi roda, namun area los sayur jalannya terlalu sempit. Guiding block ada tapi terhalang lapak pedagang di beberapa titik. Sedang dalam tahap sosialisasi penertiban lapak.',
+                checklist: [
+                    { label: 'Akses Kursi Roda (Ramp)', check: true },
+                    { label: 'Toilet Difabel', check: false },
+                    { label: 'Jalur Evakuasi Ramah Difabel', check: false },
+                    { label: 'Guiding Block (Jalur Tunanetra)', check: true },
+                    { label: 'Papan Informasi Visual Jelas', check: false }
+                ]
+            },
+            'sman3': {
+                title: 'SMA Negeri 3',
+                icon: 'fa-school',
+                category: 'Pendidikan Menengah',
+                status: 'Belum Inklusif',
+                statusClass: 'bg-red-100 text-red-800 border-red-200',
+                score: 25,
+                scoreColor: 'bg-google-red',
+                notes: 'Bangunan lama dengan banyak undakan. Tidak memiliki toilet difabel dan belum ada akses untuk siswa pengguna kursi roda ke lantai 2 dan 3. Belum menerima siswa inklusi pada tahun ajaran ini.',
+                checklist: [
+                    { label: 'Akses Kursi Roda (Ramp)', check: false },
+                    { label: 'Toilet Difabel', check: false },
+                    { label: 'Guru Pendamping Khusus', check: false },
+                    { label: 'Guiding Block (Jalur Tunanetra)', check: false },
+                    { label: 'Lift Gedung', check: false }
+                ]
+            }
+        };
+
+        const modal = document.getElementById('facilityModal');
+
+        function openModal(facilityId) {
+            const data = facilityData[facilityId];
+            if (!data) return;
+
+            // Populate Modal
+            document.getElementById('modalTitle').innerText = data.title;
+            document.getElementById('modalIcon').className = `fa-solid ${data.icon} text-google-blue mr-3`;
+            document.getElementById('modalCategory').innerText = data.category;
+            
+            document.getElementById('modalStatusContainer').innerHTML = `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold ${data.statusClass} border">${data.status}</span>`;
+            
+            document.getElementById('modalScoreText').innerText = `${data.score}/100`;
+            document.getElementById('modalScoreBar').style.width = `${data.score}%`;
+            document.getElementById('modalScoreBar').className = `${data.scoreColor} h-2.5 rounded-full`;
+            
+            document.getElementById('modalNotes').innerText = data.notes;
+
+            // Populate Checklist
+            const checklistContainer = document.getElementById('modalChecklist');
+            checklistContainer.innerHTML = '';
+            data.checklist.forEach(item => {
+                const iconHtml = item.check 
+                    ? '<i class="fa-solid fa-circle-check text-google-green mr-2"></i>' 
+                    : '<i class="fa-solid fa-circle-xmark text-google-red mr-2 opacity-70"></i>';
+                const textClass = item.check ? 'text-google-dark' : 'text-google-gray line-through opacity-70';
+                
+                checklistContainer.innerHTML += `
+                    <div class="flex items-center">
+                        ${iconHtml} <span class="${textClass}">${item.label}</span>
+                    </div>
+                `;
+            });
+
+            // Show Modal
+            modal.classList.remove('modal-hidden');
+            modal.classList.add('modal-visible');
+        }
+
+        function closeModal() {
+            modal.classList.remove('modal-visible');
+            modal.classList.add('modal-hidden');
+        }
+
+        // Close modal when clicking outside the content area
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
