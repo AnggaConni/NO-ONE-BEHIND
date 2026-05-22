@@ -185,22 +185,41 @@
                 </div>
 
                 <!-- CARD SISTEM PENYIMPANAN & EXPORT -->
-                <div class="no-print bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col lg:flex-row justify-between lg:items-center gap-4">
-                    <div>
+
+                <div class="no-print bg-white rounded-2xl p-6 shadow-sm border border-slate-200 flex flex-col xl:flex-row justify-between xl:items-center gap-5">
+                    
+                    <!-- Kiri: Teks -->
+                    <div class="flex-1">
                         <h3 class="font-bold text-slate-800 flex items-center gap-2"><i class="ph-fill ph-export text-indigo-500 text-lg"></i> Ekspor & Pengiriman Data</h3>
                         <p class="text-xs text-slate-500 mt-1">Simpan, cetak, atau kirim hasil penilaian secara online.</p>
                     </div>
                     
-                    <div class="flex flex-wrap gap-2">
-                        <!-- Tiga Tombol Utama Baru -->
-                        <button onclick="window.print()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-2 px-3 rounded-xl flex items-center gap-1.5 border border-indigo-200 text-xs transition-colors shadow-sm"><i class="ph-bold ph-printer"></i> Cetak PDF</button>
-                        <button onclick="exportDataJSON()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2 px-3 rounded-xl flex items-center gap-1.5 border border-slate-200 text-xs transition-colors shadow-sm"><i class="ph-bold ph-download-simple"></i> Backup (.json)</button>
-                        <button onclick="triggerLoadJSON()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold py-2 px-3 rounded-xl flex items-center gap-1.5 border border-slate-200 text-xs transition-colors shadow-sm"><i class="ph-bold ph-upload-simple"></i> Load</button>
-                        <!-- PASTE KODE INI DI BAWAH TOMBOL LOAD -->
-                        <button onclick="loadSampleData()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold py-2 px-3 rounded-xl flex items-center gap-1.5 border border-indigo-200 text-xs transition-colors shadow-sm"><i class="ph-bold ph-magic-wand"></i> Sample Data</button>
+                    <!-- Kanan: Container Tombol -->
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4 mt-2 xl:mt-0">
                         
-                        <button onclick="submitToGoogleForm()" id="btn-sync-gform" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-xl flex items-center gap-1.5 text-xs transition-colors shadow-md ml-auto lg:ml-2">
-                            <i class="ph-bold ph-paper-plane-tilt"></i> Kirim ke Server</button>
+                        <!-- Grup 1: Tombol Tools Secondary -->
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="window.print()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 rounded-lg flex items-center gap-1.5 border border-indigo-200 text-xs transition-colors shadow-sm">
+                                <i class="ph-bold ph-printer text-sm"></i> Cetak PDF
+                            </button>
+                            <button onclick="exportDataJSON()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3 rounded-lg flex items-center gap-1.5 border border-slate-200 text-xs transition-colors shadow-sm">
+                                <i class="ph-bold ph-download-simple text-sm"></i> Backup (.json)
+                            </button>
+                            <button onclick="triggerLoadJSON()" class="bg-slate-50 hover:bg-slate-100 text-slate-700 font-semibold py-2 px-3 rounded-lg flex items-center gap-1.5 border border-slate-200 text-xs transition-colors shadow-sm">
+                                <i class="ph-bold ph-upload-simple text-sm"></i> Load
+                            </button>
+                            <button onclick="loadSampleData()" class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold py-2 px-3 rounded-lg flex items-center gap-1.5 border border-indigo-200 text-xs transition-colors shadow-sm">
+                                <i class="ph-bold ph-magic-wand text-sm"></i> Sample Data
+                            </button>
+                        </div>
+
+                        <!-- Garis Pembatas (Hanya tampil di layar PC/Tablet) -->
+                        <div class="hidden sm:block w-px h-8 bg-slate-200"></div>
+
+                        <!-- Grup 2: Tombol Aksi Utama (Kirim Server) -->
+                        <button onclick="submitToGoogleForm()" id="btn-sync-gform" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 px-5 rounded-lg flex justify-center items-center gap-2 text-sm transition-colors shadow-md shrink-0">
+                            <i class="ph-bold ph-paper-plane-tilt text-lg"></i> Kirim ke Server
+                        </button>
                         
                         <input type="file" id="load-json-input" accept=".json" class="hidden" onchange="handleLoadJSON(event)">
                     </div>
