@@ -48,10 +48,12 @@
                         <i data-lucide="file-up" class="w-4 h-4"></i>
                         <span>Import</span>
                     </button>
-                    <button onclick="openFeedbackSummary()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-sm px-4 py-2 rounded-lg transition flex items-center space-x-2 border border-emerald-200">
-                        <i data-lucide="file-down" class="w-4 h-4"></i>
-                        <span>Ekspor JSON</span>
+
+                    <button onclick="downloadBackupFile()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-sm px-4 py-2 rounded-lg transition flex items-center space-x-2 border border-emerald-200">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Simpan / Backup</span>
                     </button>
+
                 </div>
             </div>
         </div>
@@ -206,6 +208,10 @@
                             <option value="depresi">Asesmen Depresi Mayor (PHQ-9)</option>
                             <option value="grief">Prolonged Grief Disorder</option>
                             <option value="anxiety">Gangguan Kecemasan Umum (GAD-7)</option>
+                            <option value="adhd_child">Skrining ADHD Anak (Form Orang Tua/Guru)</option>
+                            <option value="asd_child">Skrining Risiko Autisme (ASD) Anak</option>
+                            <option value="ptsd">Asesmen Trauma & PTSD (PC-PTSD-5)</option>
+                            <option value="adhd_adult">Skrining ADHD Dewasa (ASRS v1.1)</option>
                         </select>
                     </div>
                 </div>
@@ -815,6 +821,12 @@
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With peripartum onset"> With peripartum onset</label>
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With seasonal pattern"> With seasonal pattern</label>
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="In partial remission"> In partial remission</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="With intellectual impairment"> With intellectual impairment (ASD)
+                                    </label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="With language impairment"> With language impairment (ASD)
+                                    </label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="Associated with medical/genetic condition"> Assoc. with medical/genetic (ASD)
+                                    </label>
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="In full remission"> In full remission</label>
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With suicidal behavior"> With suicidal behavior</label>
                                     <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With nonsuicidal self-injury"> With NSSI</label>
@@ -832,6 +844,9 @@
                                     <option>With Psychotic Features</option>
                                     <option>In Partial Remission</option>
                                     <option>In Full Remission</option>
+                                    <option value="Level 1: Requiring support">Level 1: Requiring support (ASD)</option>
+                                    <option value="Level 2: Requiring substantial support">Level 2: Requiring substantial support (ASD)</option>
+                                    <option value="Level 3: Requiring very substantial support">Level 3: Requiring very substantial support (ASD)</option>
                                     <option>Unspecified</option>
                                 </select>
                             </div>
@@ -1078,8 +1093,8 @@
                 <div class="flex flex-wrap gap-3 justify-end pt-2">
                     <button onclick="clearAllCorrections()" class="text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 border border-red-200 rounded-lg hover:bg-red-50">Hapus Semua Log</button>
                     <button onclick="openFeedbackSummary()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center space-x-1.5">
-                        <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                        <span>Ekspor JSON</span>
+                        <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
+                        <span>Ekspor untuk Developer</span>
                     </button>
                 </div>
             </section>
@@ -1178,6 +1193,103 @@
                     {min:0,max:4,severity:"Kecemasan Minimal",interpretation:"Adaptif.",colorClass:"bg-emerald-50 border-emerald-200",progressColor:"bg-emerald-500",iconName:"check-circle"},
                     {min:5,max:9,severity:"Kecemasan Ringan",interpretation:"Edukasi stress dianjurkan.",colorClass:"bg-blue-50 border-blue-200",progressColor:"bg-blue-500",iconName:"activity"},
                     {min:10,max:21,severity:"Kecemasan Sedang-Berat",interpretation:"Evaluasi formal Psikiater dianjurkan.",colorClass:"bg-red-50 border-red-200",progressColor:"bg-red-500",iconName:"shield-alert"}
+                ]
+            },
+             ptsd: {
+                title: "Asesmen Trauma (PC-PTSD-5 DSM-5)",
+                badge: "Trauma & Stressor",
+                desc: "Evaluasi paparan trauma dan gejalanya dalam 1 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Tidak (0)"},
+                    {val: 1, text: "Ya (1)"}
+                ],
+                questions: [
+                    "Pernahkah Anda mengalami peristiwa menakutkan yang menyebabkan mimpi buruk atau bayangan yang mengganggu?",
+                    "Berusaha keras menghindari memikirkan peristiwa tersebut atau menghindari hal-hal yang mengingatkan Anda padanya?",
+                    "Terus-menerus merasa waspada, berjaga-jaga, atau mudah terkejut?",
+                    "Merasa mati rasa atau terputus hubungan dengan orang lain, aktivitas, atau lingkungan sekitar?",
+                    "Merasa bersalah atau menyalahkan diri sendiri maupun orang lain atas peristiwa itu?"
+                ],
+                scoringRules: [
+                    {min: 0, max: 2, severity: "Risiko Rendah", interpretation: "Gejala trauma minimal atau tidak signifikan.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 3, max: 5, severity: "Risiko Tinggi PTSD", interpretation: "Probabilitas PTSD tinggi. Disarankan asesmen diagnostik lebih lanjut dengan kriteria PCL-5/DSM-5.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+             adhd_adult: {
+                title: "Asesmen ADHD Dewasa (ASRS v1.1 - Part A)",
+                badge: "Neurodevelopmental",
+                desc: "Skrining 6 pertanyaan utama berdasarkan kriteria DSM-5 untuk deteksi dini ADHD pada usia dewasa (18+). Evaluasi gejala dalam 6 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Tidak Pernah (0)"},
+                    {val: 1, text: "Jarang (1)"},
+                    {val: 2, text: "Kadang-kadang (2)"},
+                    {val: 3, text: "Sering (3)"},
+                    {val: 4, text: "Sangat Sering (4)"}
+                ],
+                questions: [
+                    "Seberapa sering Anda kesulitan menyelesaikan bagian akhir dari sebuah proyek (finishing touch) setelah bagian yang sulit selesai?",
+                    "Seberapa sering Anda kesulitan mengatur atau mengurutkan tugas yang membutuhkan perencanaan/organisasi?",
+                    "Seberapa sering Anda lupa membuat janji temu atau kewajiban penting lainnya?",
+                    "Saat dihadapkan pada tugas yang membutuhkan banyak pemikiran, seberapa sering Anda menunda atau menghindar untuk memulainya?",
+                    "Seberapa sering Anda menggerakkan tangan/kaki dengan gelisah, atau menggeliat di kursi saat harus duduk diam dalam waktu lama?",
+                    "Seberapa sering Anda merasa terlalu aktif atau terdorong untuk terus melakukan sesuatu, seolah-olah digerakkan oleh mesin?"
+                ],
+                scoringRules: [
+                    {min: 0, max: 13, severity: "Bukan Indikasi ADHD", interpretation: "Gejala inatensi/hiperaktivitas tidak signifikan. Kemungkinan bukan ADHD.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 14, max: 24, severity: "Indikasi Kuat ADHD", interpretation: "Skor sangat konsisten dengan ADHD Dewasa. Disarankan wawancara klinis mendalam (kriteria DSM-5) dan evaluasi komorbiditas.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+             adhd_child: {
+                title: "Asesmen ADHD Anak (Modifikasi SNAP-IV / DSM-5)",
+                badge: "Neurodevelopmental (Anak)",
+                desc: "Diisi oleh orang tua/guru. Evaluasi gejala inatensi dan hiperaktivitas-impulsivitas pada anak usia sekolah (6-12 tahun) dalam 6 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Sama Sekali Tidak (0)"},
+                    {val: 1, text: "Kadang-kadang (1)"},
+                    {val: 2, text: "Sering (2)"},
+                    {val: 3, text: "Sangat Sering (3)"}
+                ],
+                questions: [
+                    "1. Gagal memperhatikan hal-hal detail atau ceroboh dalam tugas sekolah.",
+                    "2. Kesulitan mempertahankan konsentrasi saat belajar atau bermain.",
+                    "3. Seolah tidak mendengarkan saat diajak bicara langsung.",
+                    "4. Gagal menyelesaikan pekerjaan rumah (PR) atau kewajiban (bukan karena tidak paham).",
+                    "5. Menghindar atau enggan melakukan tugas yang membutuhkan pemikiran lama (seperti membaca/PR).",
+                    "6. Sering gelisah, tangan/kaki tidak bisa diam, atau menggeliat di kursi.",
+                    "7. Berlari-lari atau memanjat berlebihan di situasi yang tidak semestinya.",
+                    "8. Kesulitan bermain atau melakukan aktivitas santai dengan tenang.",
+                    "9. Bicara terlalu banyak, sering menyela obrolan, atau menjawab sebelum pertanyaan selesai."
+                ],
+                scoringRules: [
+                    {min: 0, max: 10, severity: "Bukan Indikasi ADHD", interpretation: "Gejala minimal, sesuai dengan perkembangan anak seusianya.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 11, max: 17, severity: "Borderline / Risiko Ringan", interpretation: "Terdapat beberapa gejala yang mengganggu. Lakukan observasi lanjutan di lingkungan sekolah dan rumah.", colorClass: "bg-amber-50 border-amber-200", progressColor: "bg-amber-500", iconName: "activity"},
+                    {min: 18, max: 27, severity: "Indikasi Kuat ADHD", interpretation: "Gejala klinis signifikan. Disarankan rujukan untuk evaluasi neurodevelopmental komprehensif oleh Psikiater Anak/Psikolog.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+
+            asd_child: {
+                title: "Skrining Risiko Autisme (Spektrum ASD Anak)",
+                badge: "Neurodevelopmental (Anak)",
+                desc: "Diisi oleh orang tua. Deteksi dini defisit komunikasi sosial dan perilaku repetitif berdasarkan penanda (red flags) DSM-5-TR.",
+                options: [
+                    {val: 0, text: "Tidak Pernah (0)"},
+                    {val: 1, text: "Jarang (1)"},
+                    {val: 2, text: "Sering (2)"},
+                    {val: 3, text: "Selalu (3)"}
+                ],
+                questions: [
+                    "Anak menghindari kontak mata saat dipanggil atau saat diajak bicara.",
+                    "Anak tidak menoleh atau tidak merespons ketika namanya dipanggil.",
+                    "Anak tidak menunjukkan ketertarikan untuk bermain bersama anak-anak lain (lebih suka main sendiri).",
+                    "Anak jarang menunjuk benda dengan telunjuk untuk menunjukkan sesuatu yang menarik kepada Anda (joint attention).",
+                    "Anak menunjukkan gerakan tubuh yang berulang-ulang dan tidak wajar (misal: mengepakkan tangan seperti sayap, berputar-putar, mengayunkan badan).",
+                    "Anak sangat terpaku/terobsesi pada objek tertentu atau bagian dari mainan (misal: hanya memutar roda mobil-mobilan).",
+                    "Anak sangat sensitif, marah, atau tantrum hebat jika ada perubahan kecil pada rutinitas sehari-harinya."
+                ],
+                scoringRules: [
+                    {min: 0, max: 5, severity: "Risiko Rendah", interpretation: "Perkembangan sosial dan komunikasi tampak wajar. Pantau sesuai milestone anak.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "smile"},
+                    {min: 6, max: 10, severity: "Risiko Sedang", interpretation: "Terdapat beberapa 'Red Flags' (tanda bahaya) perkembangan. Perlu pemantauan klinis lebih lanjut.", colorClass: "bg-amber-50 border-amber-200", progressColor: "bg-amber-500", iconName: "eye"},
+                    {min: 11, max: 21, severity: "Risiko Tinggi ASD", interpretation: "Memenuhi banyak kriteria kecurigaan Spektrum Autisme. Segera rujuk untuk intervensi dini dan diagnosis pasti.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "shield-alert"}
                 ]
             }
         };
@@ -1635,6 +1747,26 @@
         function openFeedbackSummary() {
             document.getElementById('export-raw-data').value = getRawExportData();
             document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        // Fungsi baru untuk Tombol Header (Save/Backup File langsung)
+        function downloadBackupFile() {
+            const dataStr = getRawExportData();
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            // Membuat elemen link sementara untuk memicu download
+            const a = document.createElement('a');
+            a.href = url;
+            // Nama file otomatis menggunakan tanggal hari ini
+            a.download = "DSM5_Backup_" + new Date().toISOString().split('T')[0] + ".json";
+            
+            document.body.appendChild(a);
+            a.click(); // Memicu download
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("File backup berhasil diunduh!", "success");
         }
 
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
