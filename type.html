@@ -1155,7 +1155,61 @@
         const defaultDiagnosticDatabase = [
             { id: "depresi", category: "mood", title: "Major Depressive Disorder (F32.x)", criteriaA: "A. Lima (atau lebih) gejala berikut telah muncul selama periode 2 minggu yang sama.", items: ["1. Mood depresi hampir sepanjang hari.","2. Berkurangnya minat atau kesenangan.","3. Penurunan berat badan/nafsu makan.","4. Insomnia atau hipersomnia.","5. Agitasi psikomotor.","6. Kelelahan."], source: "DSM-5-TR" },
             { id: "grief", category: "grief", title: "Prolonged Grief Disorder (F43.81)", criteriaA: "A. Kematian seseorang dekat ≥12 bulan lalu.\nB. Respons duka cita menetap.", items: ["C1. Gangguan identitas.","C2. Ketidakmampuan menerima kematian.","C3. Penghindaran pengingat kematian.","C4. Nyeri emosional intens.","C5. Kesulitan reintegrasi."], source: "DSM-5-TR" },
-            { id: "anxiety", category: "mood", title: "Generalized Anxiety Disorder (F41.1)", criteriaA: "A. Kecemasan & kekhawatiran berlebihan ≥6 bulan.\nB. Sulit mengendalikan kekhawatiran.", items: ["1. Gelisah.","2. Mudah lelah.","3. Sulit berkonsentrasi.","4. Iritabilitas.","5. Ketegangan otot.","6. Gangguan tidur."], source: "DSM-5-TR" }
+            { id: "anxiety", category: "mood", title: "Generalized Anxiety Disorder (F41.1)", criteriaA: "A. Kecemasan & kekhawatiran berlebihan ≥6 bulan.\nB. Sulit mengendalikan kekhawatiran.", items: ["1. Gelisah.","2. Mudah lelah.","3. Sulit berkonsentrasi.","4. Iritabilitas.","5. Ketegangan otot.","6. Gangguan tidur."], source: "DSM-5-TR" },
+        { 
+            id: "adhd", 
+            category: "neurodevelopmental", 
+            title: "Attention-Deficit/Hyperactivity Disorder (F90.x)", 
+            criteriaA: "A. Pola inatensi dan/atau hiperaktivitas-impulsivitas persisten yang mengganggu fungsi atau perkembangan. \n(Usia <17 th: butuh ≥6 gejala. Usia ≥17 th: butuh ≥5 gejala). Berlangsung ≥6 bulan.", 
+            items: [
+                "Inatensi 1: Sering gagal memperhatikan detail / ceroboh.",
+                "Inatensi 2: Sulit mempertahankan atensi saat tugas/bermain.",
+                "Inatensi 3: Seolah tidak mendengar saat diajak bicara langsung.",
+                "Inatensi 4: Sering gagal menyelesaikan tugas (kehilangan fokus).",
+                "Inatensi 5: Menghindari tugas yang butuh usaha mental lama.",
+                "Hiperaktif 1: Sering gelisah (fidgets) tangan/kaki atau menggeliat.",
+                "Hiperaktif 2: Sering meninggalkan tempat duduk.",
+                "Hiperaktif 3: Berlari/memanjat berlebihan (Dewasa: merasa gelisah/restless).",
+                "B. Gejala inatensi/hiperaktif muncul sebelum usia 12 tahun.",
+                "C. Gejala muncul di ≥2 setting (misal: rumah, sekolah, kerja)."
+            ], 
+            source: "DSM-5-TR" 
+        },
+        { 
+            id: "asd", 
+            category: "neurodevelopmental", 
+            title: "Autism Spectrum Disorder (F84.0)", 
+            criteriaA: "A. Defisit persisten dalam komunikasi sosial dan interaksi sosial di berbagai konteks (saat ini atau berdasarkan riwayat).", 
+            items: [
+                "A1. Defisit resiprositas sosio-emosional (mis: gagal berbalas obrolan).",
+                "A2. Defisit komunikasi non-verbal (mis: tidak ada kontak mata/ekspresi).",
+                "A3. Defisit mengembangkan, mempertahankan, & memahami relasi.",
+                "B. Perilaku, minat, aktivitas terbatas & repetitif (butuh ≥2):",
+                "B1. Gerakan motorik, penggunaan objek, atau bicara stereotipik/berulang.",
+                "B2. Desakan rutinitas kaku, ritualistik, atau distress ekstrim pada perubahan.",
+                "B3. Minat terfiksasi yang abnormal intensitasnya.",
+                "B4. Hiper/Hipo-reaktivitas terhadap input sensorik (mis: sensitif suara).",
+                "C. Gejala harus ada pada masa perkembangan awal (Early childhood)."
+            ], 
+            source: "DSM-5-TR" 
+        },
+        // --- TAMBAHAN BARU: SCHIZOPHRENIA SPECTRUM ---
+        { 
+            id: "schizophrenia", 
+            category: "psychotic", 
+            title: "Schizophrenia (F20.9)", 
+            criteriaA: "A. Dua (atau lebih) gejala berikut muncul signifikan selama 1 bulan. (Setidaknya salah satu harus 1, 2, atau 3).", 
+            items: [
+                "1. Waham (Delusions).",
+                "2. Halusinasi (Hallucinations).",
+                "3. Bicara kacau (Disorganized speech).",
+                "4. Perilaku sangat kacau atau Katatonik.",
+                "5. Gejala negatif (Afek datar, avolition).",
+                "B. Penurunan fungsi yang signifikan (pekerjaan, relasi, perawatan diri).",
+                "C. Tanda gangguan terus berlangsung setidaknya 6 bulan."
+            ], 
+            source: "DSM-5-TR" 
+        }
         ];
 
         let screenerData = JSON.parse(localStorage.getItem('dsm5_screener')) || {
