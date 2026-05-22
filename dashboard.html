@@ -638,6 +638,7 @@
                 let timestamp = new Date().toISOString();
                 let lat = null;
                 let lng = null;
+                let isRandomGps = false;
 
                 let scores = {};
                 let files = {};
@@ -653,13 +654,14 @@
                     else if (kLow.includes("provinsi") || kLow.includes("kabupaten") || kLow.includes("kota")) provinsi = val;
                     else if ((kLow.includes("inspektur") || kLow.includes("pic") || kLow.includes("nama") || kLow.includes("asesor")) && !kLow.includes("sekolah")) inspektur = val;
                     else if (kLow.includes("timestamp") || kLow.includes("waktu")) timestamp = val;
-                    else if (kLow.includes("latitude") || kLow.includes("lat")) lat = parseFloat(val);
-                    else if (kLow.includes("longitude") || kLow.includes("lng") || kLow.includes("long")) lng = parseFloat(val);
+                    else if (kLow === "latitude" || kLow === "lat" || kLow.includes("garis lintang")) lat = parseFloat(val.replace(',', '.'));
+                    else if (kLow === "longitude" || kLow === "lng" || kLow === "long" || kLow.includes("garis bujur")) lng = parseFloat(val.replace(',', '.'));
                     
-                    // Parsing JSON Payload Inklusivitas (jika ada kolom yang isinya JSON string)
-                    if (val.startsWith("{") && val.includes('"auditData"')) {
+                    // Parsing JSON Payload Inklusivitas
+                   if (val.startsWith("{") && val.includes('"auditData"')) {
                         try {
                             let parsed = JSON.parse(val);
+                            
                             if (parsed.auditData) {
                                 for (let dKey in parsed.auditData) {
                                     scores[dKey] = parseInt(parsed.auditData[dKey]);
@@ -668,10 +670,18 @@
                             if (parsed.uploadedFiles) {
                                 files = parsed.uploadedFiles;
                             }
+                            
+                            // 👇 INI TAMBAHANNYA: Ekstrak Koordinat dari JSON Profil Sekolah 👇
+                            if (parsed.schoolProfile) {
+                                if (parsed.schoolProfile.lat && parsed.schoolProfile.lng) {
+                                    lat = parseFloat(parsed.schoolProfile.lat);
+                                    lng = parseFloat(parsed.schoolProfile.lng);
+                                }
+                            }
+                            
                         } catch(e) { console.error("Bukan JSON valid", e); }
-                    } 
+                    }
                     else {
-                        // Fallback: Jika data masih terpisah-pisah per kolom bernilai 1-4
                         let match = val.match(/^(\d)$/);
                         if (match && !val.startsWith("{") && !val.startsWith("[")) {
                             let num = parseInt(match[1]);
@@ -680,11 +690,22 @@
                     }
                 }
 
-                // Generasi GPS Acak Jika tidak ada agar peta tetap berisi
-                if (!lat || !lng) {
+                // Cek Validitas & Tertukar Koordinat GPS
+                if (lat !== null && lng !== null && !isNaN(lat) && !isNaN(lng)) {
+                    // Jika user tertukar mengisi Lat & Lng (Lat Indonesia adalah sekitar -11 s/d 6. Jika > 50, pasti itu Lng)
+                    if (Math.abs(lat) > 50) {
+                        let temp = lat;
+                        lat = lng;
+                        lng = temp;
+                    }
+                }
+
+                // Generasi GPS Acak Jika benar-benar kosong agar peta tetap terisi (difokuskan di area daratan Jawa/Sumatera/Bali)
+                if (lat === null || lng === null || isNaN(lat) || isNaN(lng)) {
+                    isRandomGps = true;
                     let seed = hashStr(npsn);
-                    lat = -2.0 + (pseudoRandom(seed) * 10 - 5); 
-                    lng = 118.0 + (pseudoRandom(seed + 1) * 30 - 15);
+                    lat = -5.0 + (pseudoRandom(seed) * 8 - 4); // Rentang -9.0 s/d -1.0
+                    lng = 110.0 + (pseudoRandom(seed + 1) * 10 - 5); // Rentang 105.0 s/d 115.0
                 }
 
                 let payloads = [];
@@ -713,7 +734,6 @@
 
                         dimGroups[target].total += scores[k]; 
                         dimGroups[target].count++;
-                        // Set foto (mengambil salah satu file yang tersedia di dimensi tersebut)
                         if (files[k]) dimGroups[target].file = files[k];
                     }
 
@@ -735,6 +755,7 @@
                                 timestamp: timestamp,
                                 lat: lat,
                                 lng: lng,
+                                isRandomGps: isRandomGps,
                                 catatan: `Rerata skor evaluasi: ${avg.toFixed(2)} dari ${dimGroups[dim].count} indikator terkait.`,
                                 foto: dimGroups[dim].file
                             });
@@ -752,10 +773,7 @@
                         item.npsn = npsn;
                         item.inspektur = inspektur;
                         item.provinsi = provinsi;
-                        item.lat = item.lat || lat;
-                        item.lng = item.lng || lng;
                         
-                        // Konversi Format Lama
                         if(item.kondisi === "Aman") item.kondisi = "Sangat Inklusif";
                         if(item.kondisi === "Rusak Ringan") item.kondisi = "Inklusif";
                         if(item.kondisi === "Rusak Sedang") item.kondisi = "Menuju Inklusif";
@@ -763,7 +781,29 @@
 
                         allReports.push(item);
 
-                        if (!groupedData[npsn]) groupedData[npsn] = { namaSekolah, npsn, inspektur, provinsi, lat: item.lat, lng: item.lng, objek: {} };
+                        if (!groupedData[npsn]) {
+                            // Inisialisasi Sekolah Baru
+                            groupedData[npsn] = { 
+                                namaSekolah, 
+                                npsn, 
+                                inspektur, 
+                                provinsi, 
+                                lat: item.lat, 
+                                lng: item.lng, 
+                                latestGpsTime: item.isRandomGps ? 0 : new Date(item.timestamp).getTime(),
+                                objek: {} 
+                            };
+                        } else {
+                            // Ambil Koordinat Ter-UPDATE dari riwayat terbaru (yang valid, bukan acak)
+                            let currentItemTime = new Date(item.timestamp).getTime();
+                            if (!item.isRandomGps) {
+                                if (groupedData[npsn].latestGpsTime === 0 || currentItemTime > groupedData[npsn].latestGpsTime) {
+                                    groupedData[npsn].lat = item.lat;
+                                    groupedData[npsn].lng = item.lng;
+                                    groupedData[npsn].latestGpsTime = currentItemTime;
+                                }
+                            }
+                        }
                         
                         const objKey = item.objek.trim().toLowerCase();
                         if (!groupedData[npsn].objek[objKey]) {
