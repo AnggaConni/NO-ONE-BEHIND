@@ -836,10 +836,11 @@
             const skorAkhir = document.getElementById('dash-score').innerText;
             const kategori = document.getElementById('dash-status-text').innerText;
             
-            // Masukkan Skor dan Kategori ke dalam JSON karena di Spreadsheet tidak ada kolom khusus skor
+            // Masukkan Skor, Kategori, dan Profil (termasuk Lat/Lng) ke dalam JSON
             const payloadData = { 
                 skorTotal: skorAkhir, 
                 kategoriInklusi: kategori, 
+                schoolProfile: schoolProfile, // <--- INI TAMBAHANNYA AGAR LAT & LNG TERKIRIM
                 auditData, 
                 uploadedFiles 
             };
