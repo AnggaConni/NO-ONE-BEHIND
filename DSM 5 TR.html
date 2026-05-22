@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSM-5-TR Diagnostic Assessor - Clinical Suite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .form-section { scroll-margin-top: 80px; }
+        details > summary { list-style: none; cursor: pointer; }
+        details > summary::-webkit-details-marker { display: none; }
+        details[open] .chevron { transform: rotate(180deg); }
+        .chevron { transition: transform 0.2s; }
+        input[type="checkbox"]:checked + label .check-indicator,
+        input[type="radio"]:checked + label .check-indicator { 
+            background: #059669; border-color: #059669; 
+        }
+        input[type="checkbox"]:checked + label .check-indicator i,
+        input[type="radio"]:checked + label .check-indicator i { color: white; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="bg-emerald-600 text-white p-2 rounded-lg">
+                        <i data-lucide="activity" class="w-6 h-6"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-900 tracking-tight">DSM-5-TR Clinical Suite</h1>
+                        <p class="text-xs text-amber-600 font-semibold flex items-center">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 mr-1.5 animate-pulse"></span>
+                            PROTOTIPE v3.0 (SKRINING + DIAGNOSIS FORM)
+                        </p>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-3">
+                    <input type="file" id="import-file" class="hidden" accept=".json" onchange="handleImport(event)">
+                    <button onclick="document.getElementById('import-file').click()" class="bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium text-sm px-4 py-2 rounded-lg transition flex items-center space-x-2 border border-blue-200">
+                        <i data-lucide="file-up" class="w-4 h-4"></i>
+                        <span>Import</span>
+                    </button>
+
+                    <button onclick="downloadBackupFile()" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 font-medium text-sm px-4 py-2 rounded-lg transition flex items-center space-x-2 border border-emerald-200">
+                        <i data-lucide="save" class="w-4 h-4"></i>
+                        <span>Simpan / Backup</span>
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row gap-6">
+        
+        <!-- Sidebar -->
+        <aside class="w-full md:w-64 shrink-0">
+            <nav class="space-y-1">
+                <button onclick="switchTab('dashboard')" id="btn-dashboard" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition bg-emerald-600 text-white shadow-sm">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                    <span>Dashboard Utama</span>
+                </button>
+                <button onclick="switchTab('screener')" id="btn-screener" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                    <span>Skrining Pasien</span>
+                </button>
+                <button onclick="switchTab('diagnosis-form')" id="btn-diagnosis-form" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                    <i data-lucide="file-plus-2" class="w-5 h-5"></i>
+                    <span>Form Diagnosis DSM-5-TR</span>
+                </button>
+                <button onclick="switchTab('records')" id="btn-records" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                    <i data-lucide="folder-archive" class="w-5 h-5"></i>
+                    <span>Rekam Diagnosis</span>
+                </button>
+                <button onclick="switchTab('diagnostic-db')" id="btn-diagnostic-db" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                    <i data-lucide="book-open" class="w-5 h-5"></i>
+                    <span>Katalog Kriteria</span>
+                </button>
+                <button onclick="switchTab('feedback-panel')" id="btn-feedback-panel" class="tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+                    <i data-lucide="message-square-plus" class="w-5 h-5"></i>
+                    <span>Log Koreksi Dokter</span>
+                </button>
+            </nav>
+
+            <div class="mt-6 bg-amber-50 rounded-xl p-4 border border-amber-200 text-xs text-amber-900">
+                <h4 class="font-bold flex items-center mb-2 text-amber-800">
+                    <i data-lucide="info" class="w-4 h-4 mr-1"></i> Petunjuk Psikiater:
+                </h4>
+                <p class="mb-2 leading-relaxed">Modul Form Diagnosis dapat dikoreksi sesuai praktek klinis Anda.</p>
+                <ul class="list-disc pl-4 space-y-1">
+                    <li>Coba lengkapi form diagnosis.</li>
+                    <li>Edit kriteria di Katalog.</li>
+                    <li>Tulis koreksi di Log.</li>
+                    <li>Ekspor untuk Developer.</li>
+                </ul>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm p-6 overflow-hidden">
+            
+            <!-- TAB 1: DASHBOARD -->
+            <section id="tab-dashboard" class="tab-content space-y-6">
+                <div class="bg-gradient-to-r from-slate-900 to-slate-800 text-white p-6 rounded-xl relative overflow-hidden">
+                    <div class="relative z-10 max-w-xl">
+                        <span class="bg-emerald-500/20 text-emerald-300 text-xs font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">Selamat Datang Dokter</span>
+                        <h2 class="text-2xl font-bold mt-2">Portal Klinis Diagnosis DSM-5-TR</h2>
+                        <p class="text-slate-300 text-sm mt-1">Sistem terintegrasi: Skrining mandiri → Form diagnosis lengkap → Penegakan diagnosis dengan kode ICD-10-CM.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="border border-slate-200 rounded-xl p-4 flex items-center space-x-3">
+                        <div class="bg-blue-50 text-blue-600 p-3 rounded-lg">
+                            <i data-lucide="heart-handshake" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500">Instrumen Skrining</p>
+                            <h3 class="text-lg font-bold text-slate-800" id="stat-screeners">3</h3>
+                        </div>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-4 flex items-center space-x-3">
+                        <div class="bg-purple-50 text-purple-600 p-3 rounded-lg">
+                            <i data-lucide="file-text" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500">Diagnosis Tersimpan</p>
+                            <h3 class="text-lg font-bold text-slate-800" id="stat-records">0</h3>
+                        </div>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-4 flex items-center space-x-3">
+                        <div class="bg-amber-50 text-amber-600 p-3 rounded-lg">
+                            <i data-lucide="edit-3" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500">Koreksi Dokter</p>
+                            <h3 class="text-lg font-bold text-slate-800" id="stat-corrections">0</h3>
+                        </div>
+                    </div>
+                    <div class="border border-slate-200 rounded-xl p-4 flex items-center space-x-3">
+                        <div class="bg-emerald-50 text-emerald-600 p-3 rounded-lg">
+                            <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500">Standar</p>
+                            <h3 class="text-lg font-bold text-slate-800">DSM-5-TR</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-800 flex items-start space-x-3">
+                    <i data-lucide="alert-circle" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+                    <div>
+                        <h4 class="font-bold">Modul Baru: Form Diagnosis DSM-5-TR</h4>
+                        <p class="mt-1 leading-relaxed">Telah ditambahkan form klinis komprehensif: <strong>Identitas → Anamnesis → MSE → Asesmen Risiko → Penegakan Diagnosis (kode ICD-10-CM) → Spesifier → Formulasi Klinis → Treatment Plan</strong>. Hasil skrining dapat di-import otomatis ke form diagnosis.</p>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-3">Alur Klinis Terintegrasi</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="border border-slate-200 hover:border-emerald-300 rounded-xl p-5 cursor-pointer transition group" onclick="switchTab('screener')">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded">LANGKAH 1</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900">Skrining Awal</h4>
+                            <p class="text-xs text-slate-500 mt-1">PHQ-9, GAD-7, atau PGD checklist untuk deteksi dini.</p>
+                        </div>
+                        <div class="border border-slate-200 hover:border-emerald-300 rounded-xl p-5 cursor-pointer transition group" onclick="switchTab('diagnosis-form')">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">LANGKAH 2</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900">Form Diagnosis DSM-5-TR</h4>
+                            <p class="text-xs text-slate-500 mt-1">Anamnesis lengkap, MSE, asesmen risiko, penegakan diagnosis dengan kode.</p>
+                        </div>
+                        <div class="border border-slate-200 hover:border-emerald-300 rounded-xl p-5 cursor-pointer transition group" onclick="switchTab('records')">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-[10px] font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">LANGKAH 3</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 text-slate-400"></i>
+                            </div>
+                            <h4 class="font-bold text-slate-900">Rekam Diagnosis</h4>
+                            <p class="text-xs text-slate-500 mt-1">Daftar diagnosis tersimpan, ekspor/cetak ringkasan.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: SCREENER -->
+            <section id="tab-screener" class="tab-content hidden space-y-6">
+                <div class="flex flex-col md:flex-row md:items-center justify-between border-b border-slate-200 pb-4 gap-2">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Simulasi Skrining Gejala DSM-5-TR</h2>
+                        <p class="text-xs text-slate-500">Gunakan simulator ini untuk menguji fungsionalitas kuesioner.</p>
+                    </div>
+                    <div>
+                        <select id="screener-select" onchange="loadScreener()" class="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-sm font-medium focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                            <option value="depresi">Asesmen Depresi Mayor (PHQ-9)</option>
+                            <option value="grief">Prolonged Grief Disorder</option>
+                            <option value="anxiety">Gangguan Kecemasan Umum (GAD-7)</option>
+                            <option value="adhd_child">Skrining ADHD Anak (Form Orang Tua/Guru)</option>
+                            <option value="asd_child">Skrining Risiko Autisme (ASD) Anak</option>
+                            <option value="ptsd">Asesmen Trauma & PTSD (PC-PTSD-5)</option>
+                            <option value="adhd_adult">Skrining ADHD Dewasa (ASRS v1.1)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="bg-slate-50 rounded-xl p-6 border border-slate-200">
+                    <div id="screener-meta" class="mb-4">
+                        <span id="screener-badge" class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full font-semibold">Depressive Screening</span>
+                        <h3 id="screener-title" class="text-lg font-bold text-slate-900 mt-2">Kuesioner Gangguan Depresi Mayor</h3>
+                        <p id="screener-desc" class="text-xs text-slate-500 mt-1">Skala penilaian berdasarkan kriteria A DSM-5-TR.</p>
+                    </div>
+                    <div id="questions-container" class="space-y-4 my-6"></div>
+                    <div class="flex justify-between items-center border-t border-slate-200 pt-4">
+                        <button onclick="resetScreener()" class="text-slate-500 hover:text-slate-800 text-sm font-medium">Reset Input</button>
+                        <button onclick="calculateScreenerResult()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm px-6 py-2.5 rounded-lg transition shadow-sm flex items-center space-x-2">
+                            <i data-lucide="calculator" class="w-4 h-4"></i>
+                            <span>Analisis Diagnosa Sementara</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="screener-result-box" class="hidden border rounded-xl p-5 transition-all duration-300">
+                    <div class="flex items-start space-x-3">
+                        <div id="result-icon-bg" class="p-2.5 rounded-lg">
+                            <i id="result-icon" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between">
+                                <h4 id="result-status-title" class="font-bold text-lg">Skor Total: 0</h4>
+                                <span id="result-severity" class="text-xs font-bold px-2.5 py-1 rounded-full">Tingkat Ringan</span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-2 rounded-full my-3">
+                                <div id="result-progress" class="h-2 rounded-full transition-all duration-500" style="width: 0%"></div>
+                            </div>
+                            <p id="result-interpretation" class="text-sm leading-relaxed text-slate-600"></p>
+                            
+                            <!-- TOMBOL TRANSFER KE FORM DIAGNOSIS -->
+                            <div class="mt-4 pt-4 border-t border-slate-200/60 flex flex-wrap gap-2">
+                                <button onclick="transferToDiagnosisForm()" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold px-3 py-2 rounded-lg flex items-center space-x-1.5">
+                                    <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
+                                    <span>Lanjutkan ke Form Diagnosis DSM-5-TR</span>
+                                </button>
+                            </div>
+
+                            <div class="mt-4 pt-4 border-t border-slate-200/60 bg-white p-3 rounded-lg border">
+                                <label class="block text-xs font-bold text-slate-700 uppercase mb-1">Catatan Koreksi Psikiater:</label>
+                                <textarea id="screener-feedback" placeholder="Contoh: 'Ubah rentang skor Depresi Ringan dari 5-9 menjadi 5-10.'" class="w-full text-xs border border-slate-200 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none h-16"></textarea>
+                                <button onclick="saveScreenerFeedback()" class="mt-2 text-xs bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded-md font-medium transition flex items-center space-x-1.5">
+                                    <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                                    <span>Simpan Koreksi Skor</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: FORM DIAGNOSIS DSM-5-TR -->
+            <section id="tab-diagnosis-form" class="tab-content hidden space-y-4">
+                <div class="border-b border-slate-200 pb-4 flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Form Penegakan Diagnosis DSM-5-TR</h2>
+                        <p class="text-xs text-slate-500">Form klinis komprehensif sesuai pendekatan diagnostik DSM-5-TR (2022).</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="resetDiagnosisForm()" class="text-xs text-slate-600 hover:bg-slate-100 px-3 py-2 border border-slate-200 rounded-lg transition flex items-center space-x-1">
+                            <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                            <span>Reset</span>
+                        </button>
+                        <button onclick="saveDiagnosisRecord()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center space-x-1">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                            <span>Simpan Diagnosis</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Progress Steps -->
+                <div class="flex items-center justify-between text-[10px] font-medium text-slate-500 mb-2 overflow-x-auto hide-scrollbar">
+                    <a href="#sec-1" class="px-2 py-1 rounded bg-emerald-50 text-emerald-700 whitespace-nowrap">1. Identitas</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-2" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">2. Anamnesis</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-3" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">3. MSE</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-4" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">4. Risiko</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-5" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">5. Diagnosis</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-6" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">6. Formulasi</a>
+                    <i data-lucide="chevron-right" class="w-3 h-3 shrink-0"></i>
+                    <a href="#sec-7" class="px-2 py-1 hover:bg-slate-100 rounded whitespace-nowrap">7. Tatalaksana</a>
+                </div>
+
+                <!-- Section 1: Identitas Pasien -->
+                <details id="sec-1" open class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">1</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Identitas & Data Demografi</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">ID Pasien / No. RM</label>
+                            <input type="text" id="dx-patient-id" placeholder="contoh: RM-2024-001" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Inisial Nama</label>
+                            <input type="text" id="dx-patient-name" placeholder="Mr. X / Ny. Y" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Usia (tahun)</label>
+                            <input type="number" id="dx-age" placeholder="35" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Jenis Kelamin</label>
+                            <select id="dx-sex" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                                <option value="">-- Pilih --</option>
+                                <option>Laki-laki</option>
+                                <option>Perempuan</option>
+                                <option>Lainnya</option>
+                                <option>Tidak ingin disebutkan</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Status Perkawinan</label>
+                            <select id="dx-marital" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                                <option value="">-- Pilih --</option>
+                                <option>Belum Menikah</option>
+                                <option>Menikah</option>
+                                <option>Cerai Hidup</option>
+                                <option>Cerai Mati</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Pekerjaan</label>
+                            <input type="text" id="dx-occupation" placeholder="contoh: Karyawan swasta" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Pendidikan Terakhir</label>
+                            <select id="dx-education" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                                <option value="">-- Pilih --</option>
+                                <option>SD</option>
+                                <option>SMP</option>
+                                <option>SMA/SMK</option>
+                                <option>Diploma</option>
+                                <option>Sarjana</option>
+                                <option>Pascasarjana</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Suku / Budaya (Cultural Formulation)</label>
+                            <input type="text" id="dx-culture" placeholder="contoh: Jawa, Sunda" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-medium text-slate-600 mb-1">Tanggal Pemeriksaan</label>
+                            <input type="date" id="dx-date" class="w-full border border-slate-300 rounded-lg p-2 focus:ring-1 focus:ring-emerald-500 focus:outline-none">
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 2: Anamnesis -->
+                <details id="sec-2" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">2</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Anamnesis & Riwayat Klinis</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 space-y-3 text-xs">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Keluhan Utama (Chief Complaint)</label>
+                            <textarea id="dx-chief" placeholder="Apa yang membawa pasien mencari bantuan saat ini?" class="w-full border border-slate-300 rounded-lg p-2 h-16 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Riwayat Penyakit Sekarang (HPI)</label>
+                            <textarea id="dx-hpi" placeholder="Onset, durasi, frekuensi, faktor pencetus, pengobatan sebelumnya, perubahan fungsi..." class="w-full border border-slate-300 rounded-lg p-2 h-24 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Riwayat Gangguan Jiwa Sebelumnya</label>
+                                <textarea id="dx-past-psy" placeholder="Diagnosis sebelumnya, rawat inap, terapi..." class="w-full border border-slate-300 rounded-lg p-2 h-20 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Riwayat Medis Umum</label>
+                                <textarea id="dx-medical" placeholder="DM, HT, neurologis, tiroid, dll" class="w-full border border-slate-300 rounded-lg p-2 h-20 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Riwayat Keluarga (Gangguan Jiwa)</label>
+                                <textarea id="dx-family" placeholder="Riwayat psikiatri dalam keluarga" class="w-full border border-slate-300 rounded-lg p-2 h-20 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Riwayat Zat / Substance Use</label>
+                                <textarea id="dx-substance" placeholder="Alkohol, nikotin, NAPZA, kafein, kopi..." class="w-full border border-slate-300 rounded-lg p-2 h-20 focus:ring-1 focus:ring-emerald-500 focus:outline-none"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Stressor Psikososial (Z-codes / V-codes)</label>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z63.0 Masalah hubungan dengan pasangan"> 
+                                    <span class="text-[11px]">Masalah Pasangan</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z63.4 Kehilangan/Berduka"> 
+                                    <span class="text-[11px]">Kehilangan/Berduka</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z56.9 Masalah pekerjaan"> 
+                                    <span class="text-[11px]">Pekerjaan</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z59.0 Tunawisma"> 
+                                    <span class="text-[11px]">Ekonomi/Hunian</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z65.4 Korban kekerasan"> 
+                                    <span class="text-[11px]">Korban Kekerasan</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z62.820 Masalah orang tua-anak"> 
+                                    <span class="text-[11px]">Orang Tua-Anak</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z60.0 Transisi tahap hidup"> 
+                                    <span class="text-[11px]">Transisi Hidup</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="checkbox" class="dx-stressor" value="Z91.49 Trauma masa lalu"> 
+                                    <span class="text-[11px]">Trauma Lampau</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Skor Skrining Otomatis (dari Modul Skrining)</label>
+                            <textarea id="dx-screener-result" readonly placeholder="Belum ada hasil skrining yang ditransfer. Jalankan skrining terlebih dahulu di tab 'Skrining Pasien' lalu klik 'Lanjutkan ke Form Diagnosis'." class="w-full bg-slate-100 border border-slate-300 rounded-lg p-2 h-16 text-slate-600 focus:outline-none"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 3: Mental Status Examination -->
+                <details id="sec-3" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">3</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Pemeriksaan Status Mental (MSE)</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 space-y-3 text-xs">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">A. Penampilan & Perilaku</label>
+                                <select id="mse-appearance" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Tampak sesuai usia, rapi, kooperatif</option>
+                                    <option>Tampak lebih tua dari usia, tidak rapi</option>
+                                    <option>Berpenampilan aneh / eccentric</option>
+                                    <option>Tidak kooperatif, agitasi</option>
+                                    <option>Retardasi psikomotor</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">B. Kesadaran</label>
+                                <select id="mse-consciousness" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Compos mentis</option>
+                                    <option>Apatis</option>
+                                    <option>Somnolen</option>
+                                    <option>Berkabut (clouding)</option>
+                                    <option>Hipervigilance</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">C. Orientasi</label>
+                                <select id="mse-orientation" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Baik (waktu, tempat, orang, situasi)</option>
+                                    <option>Disorientasi waktu</option>
+                                    <option>Disorientasi tempat</option>
+                                    <option>Disorientasi orang</option>
+                                    <option>Disorientasi penuh</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">D. Mood (Subjektif)</label>
+                                <select id="mse-mood" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Eutimik</option>
+                                    <option>Disforik / Sedih</option>
+                                    <option>Elasi / Euforik</option>
+                                    <option>Iritabel</option>
+                                    <option>Cemas</option>
+                                    <option>Datar/kosong (anhedonia)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">E. Afek (Objektif)</label>
+                                <select id="mse-affect" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Sesuai / Serasi (Appropriate)</option>
+                                    <option>Tumpul (Blunted)</option>
+                                    <option>Datar (Flat)</option>
+                                    <option>Labil</option>
+                                    <option>Inappropriate / Tidak Serasi</option>
+                                    <option>Menyempit (Restricted)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">F. Pembicaraan</label>
+                                <select id="mse-speech" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Normal (volume, kecepatan, artikulasi)</option>
+                                    <option>Logorrhea (banyak bicara)</option>
+                                    <option>Bradilalia (lambat)</option>
+                                    <option>Mutism / Sangat minim</option>
+                                    <option>Disartria</option>
+                                    <option>Pressured speech</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">G. Proses Pikir</label>
+                                <select id="mse-thought-process" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Koheren, logis, asosiasi baik</option>
+                                    <option>Sirkumstansial</option>
+                                    <option>Tangensial</option>
+                                    <option>Flight of ideas</option>
+                                    <option>Asosiasi longgar</option>
+                                    <option>Inkoherent / Word salad</option>
+                                    <option>Blocking</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">H. Isi Pikir</label>
+                                <select id="mse-thought-content" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Wajar, sesuai konteks</option>
+                                    <option>Preokupasi</option>
+                                    <option>Obsesi / Kompulsi</option>
+                                    <option>Waham bizarre</option>
+                                    <option>Waham kejar / persecutory</option>
+                                    <option>Waham kebesaran / grandiose</option>
+                                    <option>Waham rujukan</option>
+                                    <option>Ideasi bunuh diri</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">I. Persepsi</label>
+                                <select id="mse-perception" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Tidak ada gangguan persepsi</option>
+                                    <option>Halusinasi auditorik</option>
+                                    <option>Halusinasi visual</option>
+                                    <option>Halusinasi taktil</option>
+                                    <option>Ilusi</option>
+                                    <option>Depersonalisasi</option>
+                                    <option>Derealisasi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">J. Kognisi (Daya Ingat, Konsentrasi)</label>
+                                <select id="mse-cognition" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Baik, konsentrasi adekuat</option>
+                                    <option>Gangguan memori jangka pendek</option>
+                                    <option>Gangguan memori jangka panjang</option>
+                                    <option>Gangguan konsentrasi</option>
+                                    <option>Gangguan eksekutif</option>
+                                    <option>Konfabulasi</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">K. Tilikan (Insight)</label>
+                                <select id="mse-insight" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Tilikan 1 (Menyangkal total)</option>
+                                    <option>Tilikan 2 (Ambivalensi)</option>
+                                    <option>Tilikan 3 (Menyalahkan faktor lain)</option>
+                                    <option>Tilikan 4 (Sadar sakit tapi tidak tahu sebab)</option>
+                                    <option>Tilikan 5 (Sadar dan tahu sebab, tidak menerapkan)</option>
+                                    <option>Tilikan 6 (Tilikan emosional/sehat)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">L. Pertimbangan (Judgement)</label>
+                                <select id="mse-judgement" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Baik</option>
+                                    <option>Cukup</option>
+                                    <option>Terganggu</option>
+                                    <option>Sangat Terganggu</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Catatan Tambahan MSE</label>
+                            <textarea id="mse-notes" placeholder="Detail tambahan terkait MSE..." class="w-full border border-slate-300 rounded-lg p-2 h-16"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 4: Asesmen Risiko -->
+                <details id="sec-4" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-red-100 text-red-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">4</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Asesmen Risiko Klinis</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 space-y-4 text-xs">
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-3 text-red-800">
+                            <p class="font-bold flex items-center"><i data-lucide="alert-triangle" class="w-4 h-4 mr-1"></i> Asesmen Risiko Bunuh Diri (CSSRS-Like)</p>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Ideasi Bunuh Diri</label>
+                                <select id="risk-suicidal-ideation" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="Tidak Ada">Tidak Ada</option>
+                                    <option value="Pasif (Ingin tidak bangun lagi)">Pasif (Ingin tidak bangun lagi)</option>
+                                    <option value="Aktif tanpa rencana">Aktif tanpa rencana</option>
+                                    <option value="Aktif dengan rencana tanpa niat">Aktif dengan rencana tanpa niat</option>
+                                    <option value="Aktif dengan rencana dan niat">Aktif dengan rencana & niat</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Percobaan Bunuh Diri Sebelumnya</label>
+                                <select id="risk-suicide-attempt" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="Tidak ada">Tidak Ada</option>
+                                    <option value="1x percobaan">1x percobaan</option>
+                                    <option value="Multiple percobaan">Multiple percobaan</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Risiko Self-Harm (NSSI)</label>
+                                <select id="risk-self-harm" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="Tidak Ada">Tidak Ada</option>
+                                    <option value="Riwayat lampau">Riwayat lampau</option>
+                                    <option value="Aktif saat ini">Aktif saat ini</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Risiko Heteroagresi / Membahayakan Orang Lain</label>
+                                <select id="risk-violence" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="Rendah">Rendah</option>
+                                    <option value="Sedang">Sedang</option>
+                                    <option value="Tinggi">Tinggi</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Stratifikasi Risiko Total</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="risk-overall" value="Rendah" class="sr-only peer">
+                                    <span class="px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-emerald-200 bg-emerald-50 text-emerald-700 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 inline-block">Rendah</span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="risk-overall" value="Sedang" class="sr-only peer">
+                                    <span class="px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-amber-200 bg-amber-50 text-amber-700 peer-checked:bg-amber-600 peer-checked:text-white peer-checked:border-amber-600 inline-block">Sedang</span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="risk-overall" value="Tinggi" class="sr-only peer">
+                                    <span class="px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-red-200 bg-red-50 text-red-700 peer-checked:bg-red-600 peer-checked:text-white peer-checked:border-red-600 inline-block">Tinggi</span>
+                                </label>
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="risk-overall" value="Krisis" class="sr-only peer">
+                                    <span class="px-3 py-1.5 text-xs font-medium rounded-lg border-2 border-red-300 bg-red-100 text-red-900 peer-checked:bg-red-800 peer-checked:text-white peer-checked:border-red-800 inline-block">⚠ KRISIS / Imminent</span>
+                                </label>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Faktor Protektif</label>
+                            <textarea id="risk-protective" placeholder="Dukungan keluarga, religiositas, alasan untuk hidup, akses bantuan, dll" class="w-full border border-slate-300 rounded-lg p-2 h-16"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 5: Penegakan Diagnosis DSM-5-TR -->
+                <details id="sec-5" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-100 text-blue-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">5</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Penegakan Diagnosis DSM-5-TR</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 space-y-4 text-xs">
+                        
+                        <!-- Diagnosis Utama -->
+                        <div class="bg-white border-2 border-blue-200 rounded-lg p-4 space-y-3">
+                            <h4 class="font-bold text-blue-800 text-sm flex items-center">
+                                <i data-lucide="target" class="w-4 h-4 mr-1"></i> Diagnosis Utama (Principal Diagnosis)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div class="md:col-span-2">
+                                    <label class="block font-medium text-slate-600 mb-1">Pilih Diagnosis DSM-5-TR</label>
+                                    <select id="dx-principal" onchange="autoFillIcdCode('dx-principal','dx-principal-code')" class="w-full border border-slate-300 rounded-lg p-2">
+                                        <option value="">-- Pilih Diagnosis --</option>
+                                        <optgroup label="Depressive Disorders">
+                                            <option data-code="F32.0">Major Depressive Disorder, Single episode, Mild</option>
+                                            <option data-code="F32.1">MDD, Single episode, Moderate</option>
+                                            <option data-code="F32.2">MDD, Single episode, Severe</option>
+                                            <option data-code="F33.0">MDD, Recurrent, Mild</option>
+                                            <option data-code="F33.1">MDD, Recurrent, Moderate</option>
+                                            <option data-code="F33.2">MDD, Recurrent, Severe</option>
+                                            <option data-code="F34.1">Persistent Depressive Disorder (Dysthymia)</option>
+                                            <option data-code="F32.81">Premenstrual Dysphoric Disorder</option>
+                                            <option data-code="F34.81">Disruptive Mood Dysregulation Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Bipolar & Related Disorders">
+                                            <option data-code="F31.11">Bipolar I, Manik, Ringan</option>
+                                            <option data-code="F31.12">Bipolar I, Manik, Sedang</option>
+                                            <option data-code="F31.13">Bipolar I, Manik, Berat</option>
+                                            <option data-code="F31.81">Bipolar II Disorder</option>
+                                            <option data-code="F34.0">Cyclothymic Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Anxiety Disorders">
+                                            <option data-code="F41.1">Generalized Anxiety Disorder</option>
+                                            <option data-code="F41.0">Panic Disorder</option>
+                                            <option data-code="F40.10">Social Anxiety Disorder</option>
+                                            <option data-code="F40.00">Agoraphobia</option>
+                                            <option data-code="F40.218">Specific Phobia</option>
+                                            <option data-code="F93.0">Separation Anxiety Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Trauma- & Stressor-Related">
+                                            <option data-code="F43.10">Posttraumatic Stress Disorder (PTSD)</option>
+                                            <option data-code="F43.0">Acute Stress Disorder</option>
+                                            <option data-code="F43.20">Adjustment Disorder</option>
+                                            <option data-code="F43.81">Prolonged Grief Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="OCD & Related">
+                                            <option data-code="F42.2">Obsessive-Compulsive Disorder</option>
+                                            <option data-code="F45.22">Body Dysmorphic Disorder</option>
+                                            <option data-code="F42.3">Hoarding Disorder</option>
+                                            <option data-code="F63.3">Trichotillomania</option>
+                                        </optgroup>
+                                        <optgroup label="Schizophrenia Spectrum">
+                                            <option data-code="F20.9">Schizophrenia</option>
+                                            <option data-code="F22">Delusional Disorder</option>
+                                            <option data-code="F23">Brief Psychotic Disorder</option>
+                                            <option data-code="F25.0">Schizoaffective Disorder, Bipolar Type</option>
+                                            <option data-code="F25.1">Schizoaffective Disorder, Depressive Type</option>
+                                        </optgroup>
+                                        <optgroup label="Substance-Related">
+                                            <option data-code="F10.20">Alcohol Use Disorder</option>
+                                            <option data-code="F12.20">Cannabis Use Disorder</option>
+                                            <option data-code="F14.20">Cocaine Use Disorder</option>
+                                            <option data-code="F15.20">Stimulant Use Disorder</option>
+                                            <option data-code="F17.200">Tobacco Use Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Neurodevelopmental">
+                                            <option data-code="F90.0">ADHD, Predominantly Inattentive</option>
+                                            <option data-code="F90.1">ADHD, Predominantly Hyperactive-Impulsive</option>
+                                            <option data-code="F90.2">ADHD, Combined</option>
+                                            <option data-code="F84.0">Autism Spectrum Disorder</option>
+                                            <option data-code="F70-79">Intellectual Disability</option>
+                                            <option data-code="F80.0">Speech Sound Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Personality Disorders">
+                                            <option data-code="F60.0">Paranoid Personality Disorder</option>
+                                            <option data-code="F60.1">Schizoid Personality Disorder</option>
+                                            <option data-code="F60.2">Antisocial Personality Disorder</option>
+                                            <option data-code="F60.3">Borderline Personality Disorder</option>
+                                            <option data-code="F60.4">Histrionic Personality Disorder</option>
+                                            <option data-code="F60.5">Obsessive-Compulsive PD</option>
+                                            <option data-code="F60.6">Avoidant Personality Disorder</option>
+                                            <option data-code="F60.7">Dependent Personality Disorder</option>
+                                            <option data-code="F60.81">Narcissistic Personality Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Feeding/Eating">
+                                            <option data-code="F50.01">Anorexia Nervosa, Restricting</option>
+                                            <option data-code="F50.02">Anorexia Nervosa, Binge-purge</option>
+                                            <option data-code="F50.2">Bulimia Nervosa</option>
+                                            <option data-code="F50.81">Binge-Eating Disorder</option>
+                                        </optgroup>
+                                        <optgroup label="Sleep-Wake">
+                                            <option data-code="F51.01">Insomnia Disorder</option>
+                                            <option data-code="F51.11">Hypersomnolence Disorder</option>
+                                            <option data-code="G47.33">Obstructive Sleep Apnea</option>
+                                        </optgroup>
+                                        <optgroup label="Neurocognitive">
+                                            <option data-code="F05">Delirium</option>
+                                            <option data-code="F02.81">Major Neurocognitive Disorder due to Alzheimer's</option>
+                                            <option data-code="G31.84">Mild Neurocognitive Disorder</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block font-medium text-slate-600 mb-1">Kode ICD-10-CM</label>
+                                    <input type="text" id="dx-principal-code" placeholder="Otomatis" readonly class="w-full bg-slate-100 border border-slate-300 rounded-lg p-2 font-mono font-bold">
+                                </div>
+                            </div>
+
+                            <!-- Specifiers -->
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-2">Specifier / Penanda Tambahan (DSM-5-TR)</label>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With anxious distress"> With anxious distress</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With mixed features"> With mixed features</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With melancholic features"> With melancholic features</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With atypical features"> With atypical features</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With psychotic features"> With psychotic features</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With catatonia"> With catatonia</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With peripartum onset"> With peripartum onset</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With seasonal pattern"> With seasonal pattern</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="In partial remission"> In partial remission</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="With intellectual impairment"> With intellectual impairment (ASD)
+                                    </label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="With language impairment"> With language impairment (ASD)
+                                    </label>
+                                    <label class="flex items-center space-x-1.5 text-[11px] font-semibold text-blue-700"><input type="checkbox" class="dx-specifier" value="Associated with medical/genetic condition"> Assoc. with medical/genetic (ASD)
+                                    </label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="In full remission"> In full remission</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With suicidal behavior"> With suicidal behavior</label>
+                                    <label class="flex items-center space-x-1.5 text-[11px]"><input type="checkbox" class="dx-specifier" value="With nonsuicidal self-injury"> With NSSI</label>
+                                </div>
+                            </div>
+
+                            <!-- Severity -->
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Tingkat Keparahan (Severity)</label>
+                                <select id="dx-severity" class="w-full border border-slate-300 rounded-lg p-2">
+                                    <option value="">-- Pilih --</option>
+                                    <option>Mild / Ringan</option>
+                                    <option>Moderate / Sedang</option>
+                                    <option>Severe / Berat</option>
+                                    <option>With Psychotic Features</option>
+                                    <option>In Partial Remission</option>
+                                    <option>In Full Remission</option>
+                                    <option value="Level 1: Requiring support">Level 1: Requiring support (ASD)</option>
+                                    <option value="Level 2: Requiring substantial support">Level 2: Requiring substantial support (ASD)</option>
+                                    <option value="Level 3: Requiring very substantial support">Level 3: Requiring very substantial support (ASD)</option>
+                                    <option>Unspecified</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis Komorbid -->
+                        <div class="bg-white border border-slate-200 rounded-lg p-4 space-y-2">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                                <i data-lucide="layers" class="w-4 h-4 mr-1"></i> Diagnosis Komorbid
+                            </h4>
+                            <textarea id="dx-comorbid" placeholder="Misal: F17.200 Tobacco Use Disorder; F41.1 GAD - sebagai komorbid sekunder" class="w-full border border-slate-300 rounded-lg p-2 h-16"></textarea>
+                        </div>
+
+                        <!-- Diagnosis Banding -->
+                        <div class="bg-white border border-slate-200 rounded-lg p-4 space-y-2">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                                <i data-lucide="git-branch" class="w-4 h-4 mr-1"></i> Diagnosis Banding (Differential)
+                            </h4>
+                            <textarea id="dx-differential" placeholder="Daftarkan minimal 2-3 diagnosis banding yang sudah dipertimbangkan dan alasan eksklusinya..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                        </div>
+
+                        <!-- Kondisi Medis Umum -->
+                        <div class="bg-white border border-slate-200 rounded-lg p-4 space-y-2">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                                <i data-lucide="stethoscope" class="w-4 h-4 mr-1"></i> Kondisi Medis Relevan
+                            </h4>
+                            <input type="text" id="dx-medical-condition" placeholder="Misal: E03.9 Hipotiroid; E11.9 DM Tipe 2" class="w-full border border-slate-300 rounded-lg p-2">
+                        </div>
+
+                        <!-- WHODAS 2.0 -->
+                        <div class="bg-white border border-slate-200 rounded-lg p-4 space-y-2">
+                            <h4 class="font-bold text-slate-800 text-sm flex items-center">
+                                <i data-lucide="bar-chart-3" class="w-4 h-4 mr-1"></i> Penilaian Disabilitas (WHODAS 2.0)
+                            </h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                <div>
+                                    <label class="block text-[11px] text-slate-500">Skor Total WHODAS (0-100)</label>
+                                    <input type="number" id="dx-whodas" min="0" max="100" placeholder="0-100" class="w-full border border-slate-300 rounded-lg p-2">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] text-slate-500">Tingkat Disabilitas</label>
+                                    <select id="dx-disability" class="w-full border border-slate-300 rounded-lg p-2">
+                                        <option value="">-- Pilih --</option>
+                                        <option>Tidak ada (0-4)</option>
+                                        <option>Ringan (5-24)</option>
+                                        <option>Sedang (25-49)</option>
+                                        <option>Berat (50-95)</option>
+                                        <option>Ekstrim (96-100)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 6: Formulasi Klinis -->
+                <details id="sec-6" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-purple-100 text-purple-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">6</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Formulasi Klinis (Biopsikososial-Kultural)</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Faktor Biologis</label>
+                            <textarea id="form-bio" placeholder="Genetik, neurobiologi, kondisi medis, riwayat zat..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Faktor Psikologis</label>
+                            <textarea id="form-psy" placeholder="Mekanisme koping, struktur kepribadian, kognisi, distorsi..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Faktor Sosial</label>
+                            <textarea id="form-soc" placeholder="Dukungan keluarga, sosioekonomi, pekerjaan, relasi..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Faktor Kultural (CFI)</label>
+                            <textarea id="form-cult" placeholder="Identitas budaya, idiom of distress, persepsi penyakit, religiositas..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block font-medium text-slate-600 mb-1">Rangkuman Formulasi Klinis</label>
+                            <textarea id="form-summary" placeholder="Ringkasan terintegrasi: predisposing, precipitating, perpetuating, protective factors (4P)..." class="w-full border border-slate-300 rounded-lg p-2 h-24"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Section 7: Tatalaksana -->
+                <details id="sec-7" class="form-section bg-slate-50 rounded-xl border border-slate-200 overflow-hidden">
+                    <summary class="px-5 py-3 flex items-center justify-between bg-white border-b border-slate-200">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-emerald-100 text-emerald-700 text-[10px] font-bold w-6 h-6 rounded-full flex items-center justify-center">7</span>
+                            <h3 class="font-bold text-slate-900 text-sm">Rencana Penatalaksanaan</h3>
+                        </div>
+                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 chevron"></i>
+                    </summary>
+                    <div class="p-5 space-y-3 text-xs">
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Setting Perawatan</label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="flex items-center space-x-1.5"><input type="radio" name="tx-setting" value="Rawat Jalan"> <span>Rawat Jalan</span></label>
+                                <label class="flex items-center space-x-1.5"><input type="radio" name="tx-setting" value="Rawat Inap"> <span>Rawat Inap</span></label>
+                                <label class="flex items-center space-x-1.5"><input type="radio" name="tx-setting" value="Day Care"> <span>Day Care</span></label>
+                                <label class="flex items-center space-x-1.5"><input type="radio" name="tx-setting" value="ICU Psikiatri"> <span>ICU Psikiatri</span></label>
+                                <label class="flex items-center space-x-1.5"><input type="radio" name="tx-setting" value="Rujuk Faskes Lain"> <span>Rujukan</span></label>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Farmakoterapi</label>
+                                <textarea id="tx-pharma" placeholder="Misal: Sertraline 50mg PO 1x/hari pagi; Clonazepam 0.5mg PO PRN..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Psikoterapi</label>
+                                <textarea id="tx-psycho" placeholder="CBT, IPT, EMDR, DBT, Psikodinamik, Suportif - Frekuensi & target sesi..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Intervensi Psikososial</label>
+                                <textarea id="tx-psychosocial" placeholder="Psikoedukasi keluarga, rehabilitasi vokasional, kelompok dukungan..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">Rencana Tindak Lanjut & Follow-up</label>
+                                <textarea id="tx-followup" placeholder="Kontrol ulang 2 minggu, evaluasi PHQ-9, side effect monitoring..." class="w-full border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Prognosis</label>
+                            <select id="tx-prognosis" class="w-full border border-slate-300 rounded-lg p-2">
+                                <option value="">-- Pilih --</option>
+                                <option>Bonam (Baik)</option>
+                                <option>Dubia ad Bonam (Cenderung Baik)</option>
+                                <option>Dubia (Ragu-ragu)</option>
+                                <option>Dubia ad Malam (Cenderung Buruk)</option>
+                                <option>Malam (Buruk)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-medium text-slate-600 mb-1">Catatan / Komunikasi Pasien & Keluarga</label>
+                            <textarea id="tx-notes" placeholder="Edukasi yang telah diberikan, informed consent, persetujuan..." class="w-full border border-slate-300 rounded-lg p-2 h-16"></textarea>
+                        </div>
+                    </div>
+                </details>
+
+                <!-- Final Action -->
+                <div class="bg-gradient-to-r from-emerald-50 to-blue-50 border border-emerald-200 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3">
+                    <div>
+                        <h4 class="font-bold text-slate-800 text-sm">Selesai Mengisi Form?</h4>
+                        <p class="text-xs text-slate-600">Simpan diagnosis untuk masuk ke Rekam Diagnosis & laporan klinis.</p>
+                    </div>
+                    <div class="flex gap-2">
+                        <button onclick="previewDiagnosis()" class="bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 text-xs font-bold px-4 py-2 rounded-lg flex items-center space-x-1">
+                            <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+                            <span>Pratinjau</span>
+                        </button>
+                        <button onclick="saveDiagnosisRecord()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center space-x-1">
+                            <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                            <span>Simpan Diagnosis</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Feedback untuk Form Diagnosis -->
+                <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                    <h4 class="text-xs font-bold text-amber-800 uppercase mb-2">Koreksi Psikiater untuk Form Diagnosis Ini:</h4>
+                    <textarea id="diagnosis-form-feedback" placeholder="Misal: 'Tambahkan field GAF Score', 'Hilangkan dropdown insight tilikan 6 karena terlalu jarang dipakai'..." class="w-full text-xs border border-amber-300 rounded-lg p-2 h-16 focus:ring-1 focus:ring-amber-500 focus:outline-none"></textarea>
+                    <button onclick="saveDiagnosisFormFeedback()" class="mt-2 text-xs bg-amber-600 hover:bg-amber-700 text-white px-3 py-1.5 rounded-md font-medium flex items-center space-x-1.5">
+                        <i data-lucide="save" class="w-3.5 h-3.5"></i>
+                        <span>Simpan Koreksi Form</span>
+                    </button>
+                </div>
+            </section>
+
+            <!-- TAB 4: RECORDS -->
+            <section id="tab-records" class="tab-content hidden space-y-4">
+                <div class="border-b border-slate-200 pb-4">
+                    <h2 class="text-xl font-bold text-slate-900">Rekam Diagnosis Pasien</h2>
+                    <p class="text-xs text-slate-500">Daftar diagnosis yang sudah disimpan dari form DSM-5-TR. Dapat di-ekspor untuk laporan klinis.</p>
+                </div>
+
+                <div id="records-list" class="space-y-3">
+                    <div id="empty-records" class="text-center py-12 text-slate-400">
+                        <i data-lucide="folder-open" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i>
+                        <p class="text-sm">Belum ada diagnosis tersimpan</p>
+                        <button onclick="switchTab('diagnosis-form')" class="mt-3 text-xs text-emerald-600 hover:text-emerald-700 font-bold">+ Buat Diagnosis Baru</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: DIAGNOSTIC CRITERIA DB -->
+            <section id="tab-diagnostic-db" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h2 class="text-xl font-bold text-slate-900">Katalog Kriteria Diagnosis DSM-5-TR</h2>
+                    <p class="text-xs text-slate-500">Anda dapat mengubah kriteria teks. Hasil edit terekam sebagai draf revisi untuk developer.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <div class="relative flex-1">
+                        <i data-lucide="search" class="w-4 h-4 absolute left-3 top-3 text-slate-400"></i>
+                        <input type="text" id="search-db" placeholder="Cari nama gangguan..." class="w-full bg-white border border-slate-300 rounded-lg pl-9 pr-4 py-2 text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    </div>
+                </div>
+                <div id="db-container" class="space-y-4"></div>
+            </section>
+
+            <!-- TAB 6: FEEDBACK PANEL -->
+            <section id="tab-feedback-panel" class="tab-content hidden space-y-6">
+                <div class="border-b border-slate-200 pb-4">
+                    <h2 class="text-xl font-bold text-slate-900">Log Koreksi & Feedback Psikiater</h2>
+                    <p class="text-xs text-slate-500">Rangkuman seluruh koreksi & catatan untuk developer.</p>
+                </div>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
+                    <h3 class="text-xs font-bold text-slate-700 uppercase">Tambah Catatan Manual</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <input type="text" id="feedback-topic" placeholder="Contoh: Alur Skrining ADHD" class="text-xs border border-slate-300 rounded-lg p-2">
+                        <select id="feedback-urgency" class="text-xs border border-slate-300 rounded-lg p-2">
+                            <option value="Saran Tambahan">Saran Tambahan (Minor)</option>
+                            <option value="Penting / Perlu Diganti">Penting / Perlu Diganti</option>
+                            <option value="KRITIS (Salah Kriteria)">KRITIS</option>
+                        </select>
+                    </div>
+                    <textarea id="feedback-detail" placeholder="Rincian feedback..." class="w-full text-xs border border-slate-300 rounded-lg p-2 h-20"></textarea>
+                    <button onclick="addManualFeedback()" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold px-4 py-2 rounded-lg">Simpan Catatan</button>
+                </div>
+                <div class="border border-slate-200 rounded-xl overflow-hidden">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-600 font-semibold">
+                                <th class="p-3">Modul/Diagnosis</th>
+                                <th class="p-3">Urgensi</th>
+                                <th class="p-3">Catatan</th>
+                                <th class="p-3 text-center">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedback-table-body" class="divide-y divide-slate-100">
+                            <tr id="empty-feedback-row">
+                                <td colspan="4" class="p-6 text-center text-slate-400">
+                                    <i data-lucide="clipboard-signature" class="w-8 h-8 mx-auto mb-2 text-slate-300"></i>
+                                    <p>Belum ada catatan revisi.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex flex-wrap gap-3 justify-end pt-2">
+                    <button onclick="clearAllCorrections()" class="text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 border border-red-200 rounded-lg hover:bg-red-50">Hapus Semua Log</button>
+                    <button onclick="openFeedbackSummary()" class="bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center space-x-1.5">
+                        <i data-lucide="file-code" class="w-3.5 h-3.5"></i>
+                        <span>Ekspor untuk Developer</span>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL Export -->
+    <div id="export-modal" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-3xl w-full p-6 shadow-xl relative flex flex-col max-h-[90vh]">
+            <button onclick="closeModal('export-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2 shrink-0">
+                <i data-lucide="file-json" class="text-emerald-600 w-5 h-5"></i>
+                <span>Ekspor Konfigurasi (Developer Ready)</span>
+            </h3>
+            <p class="text-xs text-slate-500 mt-1">Struktur JSON mencakup screener config, diagnostic database, records, dan feedback log.</p>
+            <textarea id="export-raw-data" readonly class="w-full mt-4 flex-1 bg-slate-900 text-emerald-400 p-3 rounded-lg text-xs font-mono border border-slate-800 min-h-[300px] resize-none hide-scrollbar"></textarea>
+            <div class="flex justify-end mt-5 space-x-2">
+                <button onclick="closeModal('export-modal')" class="px-4 py-2 rounded-lg border border-slate-200 text-xs">Tutup</button>
+                <button onclick="copyRawExportText()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    <span>Copy JSON</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL Preview Diagnosis -->
+    <div id="preview-modal" class="fixed inset-0 bg-slate-950/50 backdrop-blur-sm flex items-center justify-center z-50 p-4 hidden">
+        <div class="bg-white rounded-2xl max-w-4xl w-full p-6 shadow-xl relative flex flex-col max-h-[90vh]">
+            <button onclick="closeModal('preview-modal')" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-lg font-bold text-slate-900 flex items-center space-x-2 shrink-0">
+                <i data-lucide="file-check-2" class="text-emerald-600 w-5 h-5"></i>
+                <span>Pratinjau Laporan Diagnosis</span>
+            </h3>
+            <div id="preview-content" class="mt-4 flex-1 overflow-y-auto border border-slate-200 rounded-lg p-4 hide-scrollbar"></div>
+            <div class="flex justify-end mt-4 space-x-2">
+                <button onclick="closeModal('preview-modal')" class="px-4 py-2 rounded-lg border border-slate-200 text-xs">Tutup</button>
+                <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-xs font-semibold flex items-center space-x-1">
+                    <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                    <span>Cetak / PDF</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white text-xs px-4 py-3 rounded-xl shadow-lg z-50 transform translate-y-10 opacity-0 pointer-events-none transition-all duration-300 flex items-center space-x-2">
+        <i data-lucide="check-circle" class="text-emerald-400 w-4 h-4" id="toast-icon"></i>
+        <span id="toast-msg">Notifikasi.</span>
+    </div>
+
+    <script>
+        // --- DATA STATE ---
+        const defaultDiagnosticDatabase = [
+            { id: "depresi", category: "mood", title: "Major Depressive Disorder (F32.x)", criteriaA: "A. Lima (atau lebih) gejala berikut telah muncul selama periode 2 minggu yang sama.", items: ["1. Mood depresi hampir sepanjang hari.","2. Berkurangnya minat atau kesenangan.","3. Penurunan berat badan/nafsu makan.","4. Insomnia atau hipersomnia.","5. Agitasi psikomotor.","6. Kelelahan."], source: "DSM-5-TR" },
+            { id: "grief", category: "grief", title: "Prolonged Grief Disorder (F43.81)", criteriaA: "A. Kematian seseorang dekat ≥12 bulan lalu.\nB. Respons duka cita menetap.", items: ["C1. Gangguan identitas.","C2. Ketidakmampuan menerima kematian.","C3. Penghindaran pengingat kematian.","C4. Nyeri emosional intens.","C5. Kesulitan reintegrasi."], source: "DSM-5-TR" },
+            { id: "anxiety", category: "mood", title: "Generalized Anxiety Disorder (F41.1)", criteriaA: "A. Kecemasan & kekhawatiran berlebihan ≥6 bulan.\nB. Sulit mengendalikan kekhawatiran.", items: ["1. Gelisah.","2. Mudah lelah.","3. Sulit berkonsentrasi.","4. Iritabilitas.","5. Ketegangan otot.","6. Gangguan tidur."], source: "DSM-5-TR" },
+        { 
+            id: "adhd", 
+            category: "neurodevelopmental", 
+            title: "Attention-Deficit/Hyperactivity Disorder (F90.x)", 
+            criteriaA: "A. Pola inatensi dan/atau hiperaktivitas-impulsivitas persisten yang mengganggu fungsi atau perkembangan. \n(Usia <17 th: butuh ≥6 gejala. Usia ≥17 th: butuh ≥5 gejala). Berlangsung ≥6 bulan.", 
+            items: [
+                "Inatensi 1: Sering gagal memperhatikan detail / ceroboh.",
+                "Inatensi 2: Sulit mempertahankan atensi saat tugas/bermain.",
+                "Inatensi 3: Seolah tidak mendengar saat diajak bicara langsung.",
+                "Inatensi 4: Sering gagal menyelesaikan tugas (kehilangan fokus).",
+                "Inatensi 5: Menghindari tugas yang butuh usaha mental lama.",
+                "Hiperaktif 1: Sering gelisah (fidgets) tangan/kaki atau menggeliat.",
+                "Hiperaktif 2: Sering meninggalkan tempat duduk.",
+                "Hiperaktif 3: Berlari/memanjat berlebihan (Dewasa: merasa gelisah/restless).",
+                "B. Gejala inatensi/hiperaktif muncul sebelum usia 12 tahun.",
+                "C. Gejala muncul di ≥2 setting (misal: rumah, sekolah, kerja)."
+            ], 
+            source: "DSM-5-TR" 
+        },
+        { 
+            id: "asd", 
+            category: "neurodevelopmental", 
+            title: "Autism Spectrum Disorder (F84.0)", 
+            criteriaA: "A. Defisit persisten dalam komunikasi sosial dan interaksi sosial di berbagai konteks (saat ini atau berdasarkan riwayat).", 
+            items: [
+                "A1. Defisit resiprositas sosio-emosional (mis: gagal berbalas obrolan).",
+                "A2. Defisit komunikasi non-verbal (mis: tidak ada kontak mata/ekspresi).",
+                "A3. Defisit mengembangkan, mempertahankan, & memahami relasi.",
+                "B. Perilaku, minat, aktivitas terbatas & repetitif (butuh ≥2):",
+                "B1. Gerakan motorik, penggunaan objek, atau bicara stereotipik/berulang.",
+                "B2. Desakan rutinitas kaku, ritualistik, atau distress ekstrim pada perubahan.",
+                "B3. Minat terfiksasi yang abnormal intensitasnya.",
+                "B4. Hiper/Hipo-reaktivitas terhadap input sensorik (mis: sensitif suara).",
+                "C. Gejala harus ada pada masa perkembangan awal (Early childhood)."
+            ], 
+            source: "DSM-5-TR" 
+        },
+        // --- TAMBAHAN BARU: SCHIZOPHRENIA SPECTRUM ---
+        { 
+            id: "schizophrenia", 
+            category: "psychotic", 
+            title: "Schizophrenia (F20.9)", 
+            criteriaA: "A. Dua (atau lebih) gejala berikut muncul signifikan selama 1 bulan. (Setidaknya salah satu harus 1, 2, atau 3).", 
+            items: [
+                "1. Waham (Delusions).",
+                "2. Halusinasi (Hallucinations).",
+                "3. Bicara kacau (Disorganized speech).",
+                "4. Perilaku sangat kacau atau Katatonik.",
+                "5. Gejala negatif (Afek datar, avolition).",
+                "B. Penurunan fungsi yang signifikan (pekerjaan, relasi, perawatan diri).",
+                "C. Tanda gangguan terus berlangsung setidaknya 6 bulan."
+            ], 
+            source: "DSM-5-TR" 
+        }
+        ];
+
+        let screenerData = JSON.parse(localStorage.getItem('dsm5_screener')) || {
+            depresi: {
+                title: "Asesmen Skrining Depresi Mayor (Simulasi PHQ-9)",
+                badge: "Depressive Screening",
+                desc: "Evaluasi keluhan pasien dalam 2 minggu terakhir.",
+                options: [{val:0,text:"Tidak Pernah (0)"},{val:1,text:"Beberapa Hari (1)"},{val:2,text:"Lebih dari Separuh Hari (2)"},{val:3,text:"Hampir Setiap Hari (3)"}],
+                questions: ["Kurang berminat atau bergairah.","Merasa murung, sedih, putus asa.","Sulit tidur atau hipersomnia.","Lelah/kurang bertenaga.","Nafsu makan terganggu.","Merasa gagal/mengecewakan.","Sulit berkonsentrasi.","Bergerak/bicara lambat atau gelisah.","Pikiran bunuh diri/menyakiti diri."],
+                scoringRules: [
+                    {min:0,max:4,severity:"Depresi Minimal",interpretation:"Sedikit/tidak ada gejala depresi.",colorClass:"bg-emerald-50 border-emerald-200",progressColor:"bg-emerald-500",iconName:"check-circle"},
+                    {min:5,max:9,severity:"Depresi Ringan",interpretation:"Gejala ringan. Disarankan watchful waiting.",colorClass:"bg-blue-50 border-blue-200",progressColor:"bg-blue-500",iconName:"eye"},
+                    {min:10,max:14,severity:"Depresi Sedang",interpretation:"Disarankan konseling psikologis.",colorClass:"bg-amber-50 border-amber-200",progressColor:"bg-amber-500",iconName:"alert-triangle"},
+                    {min:15,max:27,severity:"Depresi Berat",interpretation:"Diperlukan intervensi psikiatri segera.",colorClass:"bg-red-50 border-red-200",progressColor:"bg-red-500",iconName:"shield-alert"}
+                ]
+            },
+            grief: {
+                title: "Skrining Prolonged Grief Disorder",
+                badge: "Duka Berkepanjangan",
+                desc: "Penilaian duka patologis >12 bulan pasca kehilangan.",
+                options: [{val:0,text:"Tidak Pernah (0)"},{val:1,text:"Jarang (1)"},{val:2,text:"Kadang (2)"},{val:3,text:"Sering (3)"}],
+                questions: ["Kerinduan intens pada mendiang?","Preokupasi dengan kematian?","Sulit menerima kematian?","Kehilangan identitas?","Menghindari pengingat?"],
+                scoringRules: [
+                    {min:0,max:7,severity:"Duka Adaptif",interpretation:"Respon duka masih wajar.",colorClass:"bg-emerald-50 border-emerald-200",progressColor:"bg-emerald-500",iconName:"heart"},
+                    {min:8,max:15,severity:"Risiko Tinggi PGD",interpretation:"Memenuhi ambang batas diagnosis PGD.",colorClass:"bg-red-50 border-red-200",progressColor:"bg-red-500",iconName:"shield-alert"}
+                ]
+            },
+            anxiety: {
+                title: "Asesmen Kecemasan Umum (GAD-7)",
+                badge: "Anxiety Screening",
+                desc: "Evaluasi gangguan kecemasan 2 minggu terakhir.",
+                options: [{val:0,text:"Tidak Pernah (0)"},{val:1,text:"Beberapa Hari (1)"},{val:2,text:"Lebih Separuh (2)"},{val:3,text:"Hampir Setiap Hari (3)"}],
+                questions: ["Cemas/khawatir berlebihan.","Tidak mampu mengendalikan khawatir.","Mengkhawatirkan banyak hal.","Sulit bersantai.","Gelisah tidak bisa diam.","Mudah kesal.","Takut hal mengerikan akan terjadi."],
+                scoringRules: [
+                    {min:0,max:4,severity:"Kecemasan Minimal",interpretation:"Adaptif.",colorClass:"bg-emerald-50 border-emerald-200",progressColor:"bg-emerald-500",iconName:"check-circle"},
+                    {min:5,max:9,severity:"Kecemasan Ringan",interpretation:"Edukasi stress dianjurkan.",colorClass:"bg-blue-50 border-blue-200",progressColor:"bg-blue-500",iconName:"activity"},
+                    {min:10,max:21,severity:"Kecemasan Sedang-Berat",interpretation:"Evaluasi formal Psikiater dianjurkan.",colorClass:"bg-red-50 border-red-200",progressColor:"bg-red-500",iconName:"shield-alert"}
+                ]
+            },
+             ptsd: {
+                title: "Asesmen Trauma (PC-PTSD-5 DSM-5)",
+                badge: "Trauma & Stressor",
+                desc: "Evaluasi paparan trauma dan gejalanya dalam 1 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Tidak (0)"},
+                    {val: 1, text: "Ya (1)"}
+                ],
+                questions: [
+                    "Pernahkah Anda mengalami peristiwa menakutkan yang menyebabkan mimpi buruk atau bayangan yang mengganggu?",
+                    "Berusaha keras menghindari memikirkan peristiwa tersebut atau menghindari hal-hal yang mengingatkan Anda padanya?",
+                    "Terus-menerus merasa waspada, berjaga-jaga, atau mudah terkejut?",
+                    "Merasa mati rasa atau terputus hubungan dengan orang lain, aktivitas, atau lingkungan sekitar?",
+                    "Merasa bersalah atau menyalahkan diri sendiri maupun orang lain atas peristiwa itu?"
+                ],
+                scoringRules: [
+                    {min: 0, max: 2, severity: "Risiko Rendah", interpretation: "Gejala trauma minimal atau tidak signifikan.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 3, max: 5, severity: "Risiko Tinggi PTSD", interpretation: "Probabilitas PTSD tinggi. Disarankan asesmen diagnostik lebih lanjut dengan kriteria PCL-5/DSM-5.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+             adhd_adult: {
+                title: "Asesmen ADHD Dewasa (ASRS v1.1 - Part A)",
+                badge: "Neurodevelopmental",
+                desc: "Skrining 6 pertanyaan utama berdasarkan kriteria DSM-5 untuk deteksi dini ADHD pada usia dewasa (18+). Evaluasi gejala dalam 6 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Tidak Pernah (0)"},
+                    {val: 1, text: "Jarang (1)"},
+                    {val: 2, text: "Kadang-kadang (2)"},
+                    {val: 3, text: "Sering (3)"},
+                    {val: 4, text: "Sangat Sering (4)"}
+                ],
+                questions: [
+                    "Seberapa sering Anda kesulitan menyelesaikan bagian akhir dari sebuah proyek (finishing touch) setelah bagian yang sulit selesai?",
+                    "Seberapa sering Anda kesulitan mengatur atau mengurutkan tugas yang membutuhkan perencanaan/organisasi?",
+                    "Seberapa sering Anda lupa membuat janji temu atau kewajiban penting lainnya?",
+                    "Saat dihadapkan pada tugas yang membutuhkan banyak pemikiran, seberapa sering Anda menunda atau menghindar untuk memulainya?",
+                    "Seberapa sering Anda menggerakkan tangan/kaki dengan gelisah, atau menggeliat di kursi saat harus duduk diam dalam waktu lama?",
+                    "Seberapa sering Anda merasa terlalu aktif atau terdorong untuk terus melakukan sesuatu, seolah-olah digerakkan oleh mesin?"
+                ],
+                scoringRules: [
+                    {min: 0, max: 13, severity: "Bukan Indikasi ADHD", interpretation: "Gejala inatensi/hiperaktivitas tidak signifikan. Kemungkinan bukan ADHD.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 14, max: 24, severity: "Indikasi Kuat ADHD", interpretation: "Skor sangat konsisten dengan ADHD Dewasa. Disarankan wawancara klinis mendalam (kriteria DSM-5) dan evaluasi komorbiditas.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+             adhd_child: {
+                title: "Asesmen ADHD Anak (Modifikasi SNAP-IV / DSM-5)",
+                badge: "Neurodevelopmental (Anak)",
+                desc: "Diisi oleh orang tua/guru. Evaluasi gejala inatensi dan hiperaktivitas-impulsivitas pada anak usia sekolah (6-12 tahun) dalam 6 bulan terakhir.",
+                options: [
+                    {val: 0, text: "Sama Sekali Tidak (0)"},
+                    {val: 1, text: "Kadang-kadang (1)"},
+                    {val: 2, text: "Sering (2)"},
+                    {val: 3, text: "Sangat Sering (3)"}
+                ],
+                questions: [
+                    "1. Gagal memperhatikan hal-hal detail atau ceroboh dalam tugas sekolah.",
+                    "2. Kesulitan mempertahankan konsentrasi saat belajar atau bermain.",
+                    "3. Seolah tidak mendengarkan saat diajak bicara langsung.",
+                    "4. Gagal menyelesaikan pekerjaan rumah (PR) atau kewajiban (bukan karena tidak paham).",
+                    "5. Menghindar atau enggan melakukan tugas yang membutuhkan pemikiran lama (seperti membaca/PR).",
+                    "6. Sering gelisah, tangan/kaki tidak bisa diam, atau menggeliat di kursi.",
+                    "7. Berlari-lari atau memanjat berlebihan di situasi yang tidak semestinya.",
+                    "8. Kesulitan bermain atau melakukan aktivitas santai dengan tenang.",
+                    "9. Bicara terlalu banyak, sering menyela obrolan, atau menjawab sebelum pertanyaan selesai."
+                ],
+                scoringRules: [
+                    {min: 0, max: 10, severity: "Bukan Indikasi ADHD", interpretation: "Gejala minimal, sesuai dengan perkembangan anak seusianya.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "check-circle"},
+                    {min: 11, max: 17, severity: "Borderline / Risiko Ringan", interpretation: "Terdapat beberapa gejala yang mengganggu. Lakukan observasi lanjutan di lingkungan sekolah dan rumah.", colorClass: "bg-amber-50 border-amber-200", progressColor: "bg-amber-500", iconName: "activity"},
+                    {min: 18, max: 27, severity: "Indikasi Kuat ADHD", interpretation: "Gejala klinis signifikan. Disarankan rujukan untuk evaluasi neurodevelopmental komprehensif oleh Psikiater Anak/Psikolog.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "alert-triangle"}
+                ]
+            },
+
+            asd_child: {
+                title: "Skrining Risiko Autisme (Spektrum ASD Anak)",
+                badge: "Neurodevelopmental (Anak)",
+                desc: "Diisi oleh orang tua. Deteksi dini defisit komunikasi sosial dan perilaku repetitif berdasarkan penanda (red flags) DSM-5-TR.",
+                options: [
+                    {val: 0, text: "Tidak Pernah (0)"},
+                    {val: 1, text: "Jarang (1)"},
+                    {val: 2, text: "Sering (2)"},
+                    {val: 3, text: "Selalu (3)"}
+                ],
+                questions: [
+                    "Anak menghindari kontak mata saat dipanggil atau saat diajak bicara.",
+                    "Anak tidak menoleh atau tidak merespons ketika namanya dipanggil.",
+                    "Anak tidak menunjukkan ketertarikan untuk bermain bersama anak-anak lain (lebih suka main sendiri).",
+                    "Anak jarang menunjuk benda dengan telunjuk untuk menunjukkan sesuatu yang menarik kepada Anda (joint attention).",
+                    "Anak menunjukkan gerakan tubuh yang berulang-ulang dan tidak wajar (misal: mengepakkan tangan seperti sayap, berputar-putar, mengayunkan badan).",
+                    "Anak sangat terpaku/terobsesi pada objek tertentu atau bagian dari mainan (misal: hanya memutar roda mobil-mobilan).",
+                    "Anak sangat sensitif, marah, atau tantrum hebat jika ada perubahan kecil pada rutinitas sehari-harinya."
+                ],
+                scoringRules: [
+                    {min: 0, max: 5, severity: "Risiko Rendah", interpretation: "Perkembangan sosial dan komunikasi tampak wajar. Pantau sesuai milestone anak.", colorClass: "bg-emerald-50 border-emerald-200", progressColor: "bg-emerald-500", iconName: "smile"},
+                    {min: 6, max: 10, severity: "Risiko Sedang", interpretation: "Terdapat beberapa 'Red Flags' (tanda bahaya) perkembangan. Perlu pemantauan klinis lebih lanjut.", colorClass: "bg-amber-50 border-amber-200", progressColor: "bg-amber-500", iconName: "eye"},
+                    {min: 11, max: 21, severity: "Risiko Tinggi ASD", interpretation: "Memenuhi banyak kriteria kecurigaan Spektrum Autisme. Segera rujuk untuk intervensi dini dan diagnosis pasti.", colorClass: "bg-red-50 border-red-200", progressColor: "bg-red-500", iconName: "shield-alert"}
+                ]
+            }
+        };
+
+        let db = JSON.parse(localStorage.getItem('dsm5_db')) || [...defaultDiagnosticDatabase];
+        let logs = JSON.parse(localStorage.getItem('dsm5_logs')) || [];
+        let diagnosisRecords = JSON.parse(localStorage.getItem('dsm5_records')) || [];
+        let currentScreenerType = 'depresi';
+        let lastScreenerResult = null;
+
+        // --- LIFECYCLE ---
+        window.onload = function() {
+            lucide.createIcons();
+            loadDiagnosticDatabase();
+            loadScreener();
+            renderLogsTable();
+            renderRecords();
+            updateDashboardStats();
+            // Set tanggal default form
+            document.getElementById('dx-date').value = new Date().toISOString().split('T')[0];
+        };
+
+        function showToast(message, type = "success") {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = message;
+            const icon = document.getElementById('toast-icon');
+            icon.setAttribute('data-lucide', type === "success" ? 'check-circle' : 'alert-triangle');
+            icon.className = type === "success" ? "text-emerald-400 w-4 h-4" : "text-amber-500 w-4 h-4";
+            lucide.createIcons();
+            toast.classList.remove('translate-y-10','opacity-0','pointer-events-none');
+            setTimeout(()=>toast.classList.add('translate-y-10','opacity-0','pointer-events-none'),3000);
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = "tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition text-slate-600 hover:bg-slate-100 hover:text-slate-900";
+            });
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+            const activeBtn = document.getElementById(`btn-${tabId}`);
+            if (activeBtn) activeBtn.className = "tab-btn w-full flex items-center space-x-3 px-4 py-3 text-sm font-medium rounded-xl transition bg-emerald-600 text-white shadow-sm";
+        }
+
+        function updateDashboardStats() {
+            document.getElementById('stat-screeners').innerText = Object.keys(screenerData).length;
+            document.getElementById('stat-corrections').innerText = logs.length;
+            document.getElementById('stat-records').innerText = diagnosisRecords.length;
+        }
+
+        // --- SCREENER ---
+        function loadScreener() {
+            currentScreenerType = document.getElementById('screener-select').value;
+            const schema = screenerData[currentScreenerType];
+            document.getElementById('screener-result-box').classList.add('hidden');
+            document.getElementById('screener-badge').innerText = schema.badge;
+            document.getElementById('screener-title').innerText = schema.title;
+            document.getElementById('screener-desc').innerText = schema.desc;
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            schema.questions.forEach((qText, index) => {
+                let optionsHtml = '';
+                schema.options.forEach(opt => {
+                    optionsHtml += `<label class="cursor-pointer"><input type="radio" name="q-${index}" value="${opt.val}" class="sr-only peer" ${opt.val===0?'checked':''}><span class="px-2.5 py-1.5 text-xs font-medium rounded-lg border border-slate-200 bg-slate-50 text-slate-600 peer-checked:bg-emerald-600 peer-checked:text-white peer-checked:border-emerald-600 inline-block">${opt.text}</span></label>`;
+                });
+                container.innerHTML += `<div class="bg-white p-4 rounded-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"><div class="flex-1"><span class="text-xs font-bold text-slate-400">Pertanyaan ${index+1}</span><p class="text-sm font-medium mt-0.5">${qText}</p></div><div class="flex flex-wrap gap-1.5">${optionsHtml}</div></div>`;
+            });
+        }
+
+        function resetScreener() { loadScreener(); showToast("Reset", "success"); }
+
+        function calculateScreenerResult() {
+            const schema = screenerData[currentScreenerType];
+            let totalScore = 0;
+            schema.questions.forEach((_,i)=>{ const s=document.querySelector(`input[name="q-${i}"]:checked`); if(s)totalScore+=parseInt(s.value);});
+            let matchedRule = schema.scoringRules[schema.scoringRules.length-1];
+            for(let r of schema.scoringRules){if(totalScore>=r.min&&totalScore<=r.max){matchedRule=r;break;}}
+            const maxVal = Math.max(...schema.options.map(o=>o.val));
+            const maxScore = schema.questions.length * maxVal;
+            
+            lastScreenerResult = {
+                instrument: schema.title,
+                score: totalScore,
+                maxScore: maxScore,
+                severity: matchedRule.severity,
+                interpretation: matchedRule.interpretation,
+                date: new Date().toLocaleString('id-ID')
+            };
+
+            const box = document.getElementById('screener-result-box');
+            box.className = `border rounded-xl p-5 ${matchedRule.colorClass}`;
+            box.classList.remove('hidden');
+            document.getElementById('result-status-title').innerText = `Skor: ${totalScore}/${maxScore}`;
+            document.getElementById('result-severity').innerText = matchedRule.severity;
+            document.getElementById('result-severity').className = `text-xs font-bold px-2.5 py-1 rounded-full ${matchedRule.progressColor} text-white`;
+            const prog = document.getElementById('result-progress');
+            prog.className = `h-2 rounded-full ${matchedRule.progressColor}`;
+            prog.style.width = `${(totalScore/maxScore)*100}%`;
+            document.getElementById('result-interpretation').innerText = matchedRule.interpretation;
+            document.getElementById('result-icon').setAttribute('data-lucide', matchedRule.iconName);
+            lucide.createIcons();
+            box.scrollIntoView({behavior:'smooth'});
+        }
+
+        function transferToDiagnosisForm() {
+            if (!lastScreenerResult) return showToast("Hitung skor dulu", "error");
+            const txt = `[${lastScreenerResult.date}] ${lastScreenerResult.instrument}\nSkor: ${lastScreenerResult.score}/${lastScreenerResult.maxScore} | ${lastScreenerResult.severity}\nInterpretasi: ${lastScreenerResult.interpretation}`;
+            document.getElementById('dx-screener-result').value = txt;
+            switchTab('diagnosis-form');
+            document.getElementById('sec-2').open = true;
+            showToast("Hasil skrining ditransfer ke Form Diagnosis", "success");
+        }
+
+        function saveScreenerFeedback() {
+            const txt = document.getElementById('screener-feedback').value.trim();
+            if (!txt) return showToast("Tulis revisi dulu", "error");
+            logs.push({id:Date.now().toString(),source:`Skrining: ${screenerData[currentScreenerType].title}`,severity:"Penting / Perlu Diganti",note:txt,timestamp:new Date().toLocaleDateString('id-ID')});
+            localStorage.setItem('dsm5_logs',JSON.stringify(logs));
+            renderLogsTable(); updateDashboardStats();
+            showToast("Koreksi tersimpan", "success");
+        }
+
+        // --- DIAGNOSIS FORM ---
+        function autoFillIcdCode(selectId, codeId) {
+            const sel = document.getElementById(selectId);
+            const opt = sel.options[sel.selectedIndex];
+            const code = opt.getAttribute('data-code') || '';
+            document.getElementById(codeId).value = code;
+        }
+
+        function collectDiagnosisData() {
+            const stressors = Array.from(document.querySelectorAll('.dx-stressor:checked')).map(c=>c.value);
+            const specifiers = Array.from(document.querySelectorAll('.dx-specifier:checked')).map(c=>c.value);
+            const riskOverall = document.querySelector('input[name="risk-overall"]:checked');
+            const txSetting = document.querySelector('input[name="tx-setting"]:checked');
+            const principalSelect = document.getElementById('dx-principal');
+            const principalText = principalSelect.value;
+            
+            return {
+                id: Date.now().toString(),
+                createdAt: new Date().toISOString(),
+                identity: {
+                    patientId: document.getElementById('dx-patient-id').value,
+                    name: document.getElementById('dx-patient-name').value,
+                    age: document.getElementById('dx-age').value,
+                    sex: document.getElementById('dx-sex').value,
+                    marital: document.getElementById('dx-marital').value,
+                    occupation: document.getElementById('dx-occupation').value,
+                    education: document.getElementById('dx-education').value,
+                    culture: document.getElementById('dx-culture').value,
+                    date: document.getElementById('dx-date').value
+                },
+                anamnesis: {
+                    chiefComplaint: document.getElementById('dx-chief').value,
+                    hpi: document.getElementById('dx-hpi').value,
+                    pastPsych: document.getElementById('dx-past-psy').value,
+                    medical: document.getElementById('dx-medical').value,
+                    family: document.getElementById('dx-family').value,
+                    substance: document.getElementById('dx-substance').value,
+                    stressors: stressors,
+                    screenerResult: document.getElementById('dx-screener-result').value
+                },
+                mse: {
+                    appearance: document.getElementById('mse-appearance').value,
+                    consciousness: document.getElementById('mse-consciousness').value,
+                    orientation: document.getElementById('mse-orientation').value,
+                    mood: document.getElementById('mse-mood').value,
+                    affect: document.getElementById('mse-affect').value,
+                    speech: document.getElementById('mse-speech').value,
+                    thoughtProcess: document.getElementById('mse-thought-process').value,
+                    thoughtContent: document.getElementById('mse-thought-content').value,
+                    perception: document.getElementById('mse-perception').value,
+                    cognition: document.getElementById('mse-cognition').value,
+                    insight: document.getElementById('mse-insight').value,
+                    judgement: document.getElementById('mse-judgement').value,
+                    notes: document.getElementById('mse-notes').value
+                },
+                risk: {
+                    suicidalIdeation: document.getElementById('risk-suicidal-ideation').value,
+                    suicideAttempt: document.getElementById('risk-suicide-attempt').value,
+                    selfHarm: document.getElementById('risk-self-harm').value,
+                    violence: document.getElementById('risk-violence').value,
+                    overall: riskOverall ? riskOverall.value : '',
+                    protective: document.getElementById('risk-protective').value
+                },
+                diagnosis: {
+                    principal: principalText,
+                    principalCode: document.getElementById('dx-principal-code').value,
+                    specifiers: specifiers,
+                    severity: document.getElementById('dx-severity').value,
+                    comorbid: document.getElementById('dx-comorbid').value,
+                    differential: document.getElementById('dx-differential').value,
+                    medicalCondition: document.getElementById('dx-medical-condition').value,
+                    whodas: document.getElementById('dx-whodas').value,
+                    disability: document.getElementById('dx-disability').value
+                },
+                formulation: {
+                    biological: document.getElementById('form-bio').value,
+                    psychological: document.getElementById('form-psy').value,
+                    social: document.getElementById('form-soc').value,
+                    cultural: document.getElementById('form-cult').value,
+                    summary: document.getElementById('form-summary').value
+                },
+                treatment: {
+                    setting: txSetting ? txSetting.value : '',
+                    pharmacology: document.getElementById('tx-pharma').value,
+                    psychotherapy: document.getElementById('tx-psycho').value,
+                    psychosocial: document.getElementById('tx-psychosocial').value,
+                    followup: document.getElementById('tx-followup').value,
+                    prognosis: document.getElementById('tx-prognosis').value,
+                    notes: document.getElementById('tx-notes').value
+                }
+            };
+        }
+
+        function saveDiagnosisRecord() {
+            const data = collectDiagnosisData();
+            if (!data.identity.patientId && !data.identity.name) return showToast("ID atau Inisial pasien wajib diisi", "error");
+            if (!data.diagnosis.principal) return showToast("Pilih Diagnosis Utama dulu", "error");
+            
+            diagnosisRecords.push(data);
+            localStorage.setItem('dsm5_records', JSON.stringify(diagnosisRecords));
+            renderRecords();
+            updateDashboardStats();
+            showToast("Diagnosis tersimpan ke Rekam Diagnosis", "success");
+        }
+
+        function resetDiagnosisForm() {
+            if (!confirm("Reset semua field form?")) return;
+            document.querySelectorAll('#tab-diagnosis-form input, #tab-diagnosis-form textarea, #tab-diagnosis-form select').forEach(el => {
+                if (el.type === 'checkbox' || el.type === 'radio') el.checked = false;
+                else el.value = '';
+            });
+            document.getElementById('dx-date').value = new Date().toISOString().split('T')[0];
+            showToast("Form di-reset", "success");
+        }
+
+        function saveDiagnosisFormFeedback() {
+            const txt = document.getElementById('diagnosis-form-feedback').value.trim();
+            if (!txt) return showToast("Tulis koreksi dulu", "error");
+            logs.push({id:Date.now().toString(),source:`Form Diagnosis DSM-5-TR`,severity:"Penting / Perlu Diganti",note:txt,timestamp:new Date().toLocaleDateString('id-ID')});
+            localStorage.setItem('dsm5_logs',JSON.stringify(logs));
+            document.getElementById('diagnosis-form-feedback').value = '';
+            renderLogsTable(); updateDashboardStats();
+            showToast("Koreksi form tersimpan", "success");
+        }
+
+        function previewDiagnosis() {
+            const d = collectDiagnosisData();
+            const html = generatePreviewHTML(d);
+            document.getElementById('preview-content').innerHTML = html;
+            document.getElementById('preview-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function generatePreviewHTML(d) {
+            return `
+                <div class="text-sm space-y-4">
+                    <div class="border-b pb-3">
+                        <h2 class="font-bold text-lg">LAPORAN DIAGNOSIS PSIKIATRI - DSM-5-TR</h2>
+                        <p class="text-xs text-slate-500">Tanggal: ${d.identity.date} | ID: ${d.identity.patientId || '-'}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-emerald-700 mb-1">A. IDENTITAS PASIEN</h3>
+                        <p>Nama: ${d.identity.name || '-'} | Usia: ${d.identity.age || '-'} thn | JK: ${d.identity.sex || '-'}</p>
+                        <p>Status: ${d.identity.marital || '-'} | Pekerjaan: ${d.identity.occupation || '-'} | Pendidikan: ${d.identity.education || '-'}</p>
+                        <p>Budaya/Suku: ${d.identity.culture || '-'}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-emerald-700 mb-1">B. ANAMNESIS</h3>
+                        <p><strong>Keluhan Utama:</strong> ${d.anamnesis.chiefComplaint || '-'}</p>
+                        <p><strong>HPI:</strong> ${d.anamnesis.hpi || '-'}</p>
+                        <p><strong>Riwayat Psikiatri:</strong> ${d.anamnesis.pastPsych || '-'}</p>
+                        <p><strong>Riwayat Medis:</strong> ${d.anamnesis.medical || '-'}</p>
+                        <p><strong>Riwayat Keluarga:</strong> ${d.anamnesis.family || '-'}</p>
+                        <p><strong>Riwayat Zat:</strong> ${d.anamnesis.substance || '-'}</p>
+                        <p><strong>Stressor:</strong> ${d.anamnesis.stressors.join('; ') || '-'}</p>
+                        ${d.anamnesis.screenerResult ? `<p><strong>Hasil Skrining:</strong><br><pre class="text-xs whitespace-pre-wrap bg-slate-50 p-2 rounded">${d.anamnesis.screenerResult}</pre></p>` : ''}
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-emerald-700 mb-1">C. PEMERIKSAAN STATUS MENTAL (MSE)</h3>
+                        <ul class="list-disc pl-5 space-y-0.5 text-xs">
+                            <li>Penampilan: ${d.mse.appearance || '-'}</li>
+                            <li>Kesadaran: ${d.mse.consciousness || '-'}</li>
+                            <li>Orientasi: ${d.mse.orientation || '-'}</li>
+                            <li>Mood: ${d.mse.mood || '-'}</li>
+                            <li>Afek: ${d.mse.affect || '-'}</li>
+                            <li>Pembicaraan: ${d.mse.speech || '-'}</li>
+                            <li>Proses Pikir: ${d.mse.thoughtProcess || '-'}</li>
+                            <li>Isi Pikir: ${d.mse.thoughtContent || '-'}</li>
+                            <li>Persepsi: ${d.mse.perception || '-'}</li>
+                            <li>Kognisi: ${d.mse.cognition || '-'}</li>
+                            <li>Insight: ${d.mse.insight || '-'}</li>
+                            <li>Judgement: ${d.mse.judgement || '-'}</li>
+                        </ul>
+                        ${d.mse.notes ? `<p class="mt-1"><strong>Catatan:</strong> ${d.mse.notes}</p>` : ''}
+                    </div>
+                    <div class="bg-red-50 p-3 rounded-lg border border-red-200">
+                        <h3 class="font-bold text-red-700 mb-1">D. ASESMEN RISIKO</h3>
+                        <p>Ideasi Bunuh Diri: <strong>${d.risk.suicidalIdeation}</strong></p>
+                        <p>Percobaan Sebelumnya: ${d.risk.suicideAttempt}</p>
+                        <p>NSSI: ${d.risk.selfHarm}</p>
+                        <p>Heteroagresi: ${d.risk.violence}</p>
+                        <p>Stratifikasi: <strong class="uppercase">${d.risk.overall || '-'}</strong></p>
+                        <p>Faktor Protektif: ${d.risk.protective || '-'}</p>
+                    </div>
+                    <div class="bg-blue-50 p-3 rounded-lg border border-blue-200">
+                        <h3 class="font-bold text-blue-700 mb-1">E. DIAGNOSIS DSM-5-TR</h3>
+                        <p><strong>Diagnosis Utama:</strong> <span class="font-mono bg-blue-100 px-1 rounded">${d.diagnosis.principalCode}</span> ${d.diagnosis.principal}</p>
+                        <p><strong>Severity:</strong> ${d.diagnosis.severity || '-'}</p>
+                        <p><strong>Specifier:</strong> ${d.diagnosis.specifiers.join('; ') || '-'}</p>
+                        <p><strong>Komorbid:</strong> ${d.diagnosis.comorbid || '-'}</p>
+                        <p><strong>Diagnosis Banding:</strong> ${d.diagnosis.differential || '-'}</p>
+                        <p><strong>Kondisi Medis:</strong> ${d.diagnosis.medicalCondition || '-'}</p>
+                        <p><strong>WHODAS 2.0:</strong> ${d.diagnosis.whodas || '-'} (${d.diagnosis.disability || '-'})</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-purple-700 mb-1">F. FORMULASI KLINIS</h3>
+                        <p><strong>Biologis:</strong> ${d.formulation.biological || '-'}</p>
+                        <p><strong>Psikologis:</strong> ${d.formulation.psychological || '-'}</p>
+                        <p><strong>Sosial:</strong> ${d.formulation.social || '-'}</p>
+                        <p><strong>Kultural:</strong> ${d.formulation.cultural || '-'}</p>
+                        <p><strong>Rangkuman:</strong> ${d.formulation.summary || '-'}</p>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-emerald-700 mb-1">G. RENCANA PENATALAKSANAAN</h3>
+                        <p><strong>Setting:</strong> ${d.treatment.setting || '-'}</p>
+                        <p><strong>Farmakoterapi:</strong> ${d.treatment.pharmacology || '-'}</p>
+                        <p><strong>Psikoterapi:</strong> ${d.treatment.psychotherapy || '-'}</p>
+                        <p><strong>Psikososial:</strong> ${d.treatment.psychosocial || '-'}</p>
+                        <p><strong>Follow-up:</strong> ${d.treatment.followup || '-'}</p>
+                        <p><strong>Prognosis:</strong> ${d.treatment.prognosis || '-'}</p>
+                        <p><strong>Catatan:</strong> ${d.treatment.notes || '-'}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- RECORDS ---
+        function renderRecords() {
+            const list = document.getElementById('records-list');
+            if (diagnosisRecords.length === 0) {
+                list.innerHTML = `<div id="empty-records" class="text-center py-12 text-slate-400"><i data-lucide="folder-open" class="w-12 h-12 mx-auto mb-2 text-slate-300"></i><p class="text-sm">Belum ada diagnosis tersimpan</p><button onclick="switchTab('diagnosis-form')" class="mt-3 text-xs text-emerald-600 hover:text-emerald-700 font-bold">+ Buat Diagnosis Baru</button></div>`;
+                lucide.createIcons();
+                return;
+            }
+            list.innerHTML = diagnosisRecords.map(r => `
+                <div class="border border-slate-200 rounded-xl p-4 hover:border-emerald-300 transition">
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="font-mono text-[10px] bg-slate-100 px-2 py-0.5 rounded">${r.identity.patientId || 'N/A'}</span>
+                                <span class="text-[10px] text-slate-400">${new Date(r.createdAt).toLocaleString('id-ID')}</span>
+                                ${r.risk.overall === 'Krisis' ? '<span class="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded font-bold">⚠ KRISIS</span>' : ''}
+                            </div>
+                            <h4 class="font-bold text-sm">${r.identity.name || '-'} (${r.identity.age || '-'} thn, ${r.identity.sex || '-'})</h4>
+                            <p class="text-xs mt-1"><span class="font-mono bg-blue-100 text-blue-800 px-1 rounded">${r.diagnosis.principalCode}</span> ${r.diagnosis.principal}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Severity: ${r.diagnosis.severity || '-'} | Risiko: ${r.risk.overall || '-'} | Prognosis: ${r.treatment.prognosis || '-'}</p>
+                        </div>
+                        <div class="flex gap-1">
+                            <button onclick="viewRecord('${r.id}')" class="p-1.5 text-slate-500 hover:bg-slate-100 rounded" title="Lihat"><i data-lucide="eye" class="w-4 h-4"></i></button>
+                            <button onclick="deleteRecord('${r.id}')" class="p-1.5 text-red-500 hover:bg-red-50 rounded" title="Hapus"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function viewRecord(id) {
+            const r = diagnosisRecords.find(x => x.id === id);
+            if (!r) return;
+            document.getElementById('preview-content').innerHTML = generatePreviewHTML(r);
+            document.getElementById('preview-modal').classList.remove('hidden');
+            lucide.createIcons();
+        }
+
+        function deleteRecord(id) {
+            if (!confirm("Hapus diagnosis ini?")) return;
+            diagnosisRecords = diagnosisRecords.filter(r => r.id !== id);
+            localStorage.setItem('dsm5_records', JSON.stringify(diagnosisRecords));
+            renderRecords(); updateDashboardStats();
+            showToast("Diagnosis dihapus", "success");
+        }
+
+        // --- DB ---
+        function loadDiagnosticDatabase() {
+            const container = document.getElementById('db-container');
+            container.innerHTML = '';
+            db.forEach(item => {
+                container.innerHTML += `<div class="border border-slate-200 rounded-xl p-5 bg-white shadow-sm space-y-3">
+                    <div>
+                        <span class="bg-slate-100 text-slate-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">${item.category}</span>
+                        <h3 class="text-base font-bold text-slate-900 mt-1">${item.title}</h3>
+                        <p class="text-[10px] text-slate-400 mt-0.5">${item.source}</p>
+                    </div>
+                    <p class="text-xs text-slate-600 bg-slate-50 p-2 rounded-lg italic whitespace-pre-wrap">${item.criteriaA}</p>
+                    <ul class="list-disc pl-5 text-xs text-slate-600 space-y-1">${item.items.map(g=>`<li>${g}</li>`).join('')}</ul>
+                </div>`;
+            });
+        }
+
+        // --- FEEDBACK ---
+        function renderLogsTable() {
+            const tbody = document.getElementById('feedback-table-body');
+            document.querySelectorAll('.log-row').forEach(r=>r.remove());
+            if (logs.length === 0) {
+                document.getElementById('empty-feedback-row').classList.remove('hidden');
+                return;
+            }
+            document.getElementById('empty-feedback-row').classList.add('hidden');
+            logs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.className = "log-row hover:bg-slate-50 border-b";
+                tr.innerHTML = `<td class="p-3"><span class="font-bold block">${log.source}</span><span class="text-[10px] text-slate-400">${log.timestamp}</span></td><td class="p-3"><span class="bg-blue-100 text-blue-800 text-[10px] font-bold px-2 py-1 rounded-full">${log.severity}</span></td><td class="p-3 whitespace-pre-wrap max-w-xs">${log.note}</td><td class="p-3 text-center"><button onclick="deleteLog('${log.id}')" class="text-red-500 hover:bg-red-50 p-1 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>`;
+                tbody.appendChild(tr);
+            });
+            lucide.createIcons();
+        }
+
+        function addManualFeedback() {
+            const t = document.getElementById('feedback-topic').value.trim();
+            const u = document.getElementById('feedback-urgency').value;
+            const d = document.getElementById('feedback-detail').value.trim();
+            if (!t || !d) return showToast("Topik & rincian wajib", "error");
+            logs.push({id:Date.now().toString(),source:t,severity:u,note:d,timestamp:new Date().toLocaleDateString('id-ID')});
+            localStorage.setItem('dsm5_logs',JSON.stringify(logs));
+            document.getElementById('feedback-topic').value=''; document.getElementById('feedback-detail').value='';
+            renderLogsTable(); updateDashboardStats();
+            showToast("Tersimpan", "success");
+        }
+
+        function deleteLog(id) {
+            logs = logs.filter(l=>l.id!==id);
+            localStorage.setItem('dsm5_logs',JSON.stringify(logs));
+            renderLogsTable(); updateDashboardStats();
+        }
+
+        function clearAllCorrections() {
+            if (!confirm("Hapus semua log?")) return;
+            logs = []; localStorage.removeItem('dsm5_logs');
+            renderLogsTable(); updateDashboardStats();
+        }
+
+        // --- EXPORT ---
+        function getRawExportData() {
+            return JSON.stringify({
+                systemMetadata: { targetFramework:"DSM-5-TR", prototypeStatus:"PSYCHIATRIST_REVIEWED", exportDate:new Date().toISOString(), version:"3.0" },
+                recordedFeedbackLogs: logs,
+                screenerConfiguration: screenerData,
+                diagnosticsDatabasePatch: db,
+                patientDiagnosisRecords: diagnosisRecords
+            }, null, 2);
+        }
+
+        function openFeedbackSummary() {
+            document.getElementById('export-raw-data').value = getRawExportData();
+            document.getElementById('export-modal').classList.remove('hidden');
+        }
+
+        // Fungsi baru untuk Tombol Header (Save/Backup File langsung)
+        function downloadBackupFile() {
+            const dataStr = getRawExportData();
+            const blob = new Blob([dataStr], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            
+            // Membuat elemen link sementara untuk memicu download
+            const a = document.createElement('a');
+            a.href = url;
+            // Nama file otomatis menggunakan tanggal hari ini
+            a.download = "DSM5_Backup_" + new Date().toISOString().split('T')[0] + ".json";
+            
+            document.body.appendChild(a);
+            a.click(); // Memicu download
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showToast("File backup berhasil diunduh!", "success");
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function copyRawExportText() {
+            const ta = document.getElementById('export-raw-data');
+            ta.select(); document.execCommand('copy');
+            showToast("JSON dicopy", "success");
+        }
+
+        function handleImport(event) {
+            const f = event.target.files[0];
+            if (!f) return;
+            const r = new FileReader();
+            r.onload = function(e) {
+                try {
+                    const d = JSON.parse(e.target.result);
+                    if (d.diagnosticsDatabasePatch) { db = d.diagnosticsDatabasePatch; localStorage.setItem('dsm5_db',JSON.stringify(db)); }
+                    if (d.screenerConfiguration) { screenerData = d.screenerConfiguration; localStorage.setItem('dsm5_screener',JSON.stringify(screenerData)); }
+                    if (d.recordedFeedbackLogs) { logs = d.recordedFeedbackLogs; localStorage.setItem('dsm5_logs',JSON.stringify(logs)); }
+                    if (d.patientDiagnosisRecords) { diagnosisRecords = d.patientDiagnosisRecords; localStorage.setItem('dsm5_records',JSON.stringify(diagnosisRecords)); }
+                    loadDiagnosticDatabase(); loadScreener(); renderLogsTable(); renderRecords(); updateDashboardStats();
+                    document.getElementById('import-file').value = '';
+                    showToast("Berhasil import sesi", "success");
+                } catch(err) { showToast("File JSON tidak valid", "error"); }
+            };
+            r.readAsText(f);
+        }
+    </script>
+</body>
+</html>
