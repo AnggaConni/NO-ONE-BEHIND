@@ -71,7 +71,7 @@ Mobile-friendly layout
 Radar chart analytics visualization
 🚀 Getting Started
 1. Clone Repository
-git clone https://github.com/yourusername/whodas-assessment.git
+git clone 
 2. Open Project
 
 Simply open:
