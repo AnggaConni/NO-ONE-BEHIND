@@ -5,712 +5,260 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Inclusive Growth — Platform Pendidikan Inklusif untuk Pendidik, Orang Tua, dan Masyarakat.">
   <title>Inclusive Growth | Tumbuh Bersama, Belajar untuk Semua</title>
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            display: ['Nunito', 'sans-serif']
-          },
-          colors: {
-            growth: {
-              teal: '#2E7D6B',
-              gold: '#C08A2E',
-              navy: '#1F3B57',
-              mist: '#F4F8F6',
-              cream: '#FCFBF7',
-              ink: '#24313B'
-            }
-          },
-          boxShadow: {
-            soft: '0 18px 45px rgba(31,59,87,0.08)',
-            card: '0 8px 24px rgba(31,59,87,0.07)'
-          }
-        }
-      }
-    }
-  </script>
-
   <style>
-    html { scroll-behavior: smooth; }
-    body { font-family: 'Inter', sans-serif; color: #24313B; background: #ffffff; }
-    h1,h2,h3,h4 { font-family: 'Nunito', sans-serif; }
-    .glass {
-      background: rgba(255,255,255,.84);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-    .lift { transition: transform .2s ease, box-shadow .2s ease; }
-    .lift:hover { transform: translateY(-4px); box-shadow: 0 18px 35px rgba(31,59,87,.10); }
-    .line-draw {
-      stroke-dasharray: 7 8;
-      animation: dash 15s linear infinite;
-    }
-    @keyframes dash { to { stroke-dashoffset: -160; } }
-    .float-a { animation: floatA 6s ease-in-out infinite; transform-origin: center; }
-    .float-b { animation: floatB 7s ease-in-out infinite; transform-origin: center; }
-    @keyframes floatA { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    @keyframes floatB { 0%,100%{transform:translateY(0)} 50%{transform:translateY(7px)} }
-    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
-    .reveal.is-visible { opacity: 1; transform: translateY(0); }
-    .timeline-line {
-      background: linear-gradient(to right, rgba(46,125,107,.16), rgba(192,138,46,.28), rgba(46,125,107,.16));
-    }
-    @media (prefers-reduced-motion: reduce) {
-      html { scroll-behavior: auto; }
-      .line-draw, .float-a, .float-b { animation: none; }
-      .reveal { opacity: 1; transform: none; transition: none; }
-    }
+    :root{--teal:#2E7D6B;--gold:#C08A2E;--navy:#1F3B57;--mist:#F4F8F6;--cream:#FCFBF7;--ink:#24313B}
+    html{scroll-behavior:smooth} body{font-family:Inter,sans-serif;color:var(--ink);background:#fff}
+    h1,h2,h3,h4{font-family:Nunito,sans-serif}.tab-panel{display:none}.tab-panel.active{display:block}
+    .tab-button{position:relative}.tab-button.active{color:var(--teal);font-weight:800}
+    .tab-button.active::after{content:"";position:absolute;left:0;right:0;bottom:-22px;height:3px;border-radius:999px;background:var(--teal)}
+    .lift{transition:transform .2s ease,box-shadow .2s ease}.lift:hover{transform:translateY(-4px);box-shadow:0 18px 36px rgba(31,59,87,.10)}
+    .soft{box-shadow:0 18px 45px rgba(31,59,87,.08)}
+    .timeline-line{background:linear-gradient(to right,rgba(46,125,107,.18),rgba(192,138,46,.35),rgba(46,125,107,.18))}
+    .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}.reveal.is-visible{opacity:1;transform:none}
+    .line-draw{stroke-dasharray:8 10;animation:dash 16s linear infinite}@keyframes dash{to{stroke-dashoffset:-180}}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.line-draw{animation:none}.reveal{opacity:1;transform:none}}
   </style>
 </head>
-
-<body class="bg-white text-growth-ink">
-  <!-- Header -->
-  <header class="sticky top-0 z-50 border-b border-slate-200/70 bg-white/90 backdrop-blur">
+<body>
+  <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
       <div class="h-20 flex items-center justify-between gap-6">
-        <a href="#beranda" class="flex items-center gap-3 shrink-0">
-          <div class="w-11 h-11 rounded-2xl bg-growth-teal text-white flex items-center justify-center shadow-card">
-            <svg viewBox="0 0 48 48" class="w-7 h-7" fill="none" aria-hidden="true">
-              <path d="M24 38c7-9 11-15 11-21A11 11 0 0 0 24 6 11 11 0 0 0 13 17c0 6 4 12 11 21Z" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"/>
-              <path d="M24 24c-5-1-8-3-10-7M24 24c5-1 8-3 10-7M24 24v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
-            </svg>
+        <a href="#" onclick="switchTab('pembuka');return false;" class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white" style="background:var(--teal)">
+            <svg viewBox="0 0 48 48" class="w-7 h-7" fill="none" aria-hidden="true"><path d="M24 38c7-9 11-15 11-21A11 11 0 0 0 24 6 11 11 0 0 0 13 17c0 6 4 12 11 21Z" stroke="currentColor" stroke-width="2.4"/><path d="M24 24c-5-1-8-3-10-7M24 24c5-1 8-3 10-7M24 24v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
           </div>
-          <div>
-            <div class="font-display font-800 text-xl text-growth-navy leading-none">Inclusive Growth</div>
-            <div class="text-[11px] tracking-[.18em] uppercase text-slate-500 mt-1">Platform Pendidikan Inklusif</div>
-          </div>
+          <div><div class="font-extrabold text-xl leading-none" style="font-family:Nunito;color:var(--navy)">Inclusive Growth</div><div class="text-[11px] tracking-[.18em] uppercase text-slate-500 mt-1">Platform Pendidikan Inklusif</div></div>
         </a>
-
-        <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-slate-600">
-          <a href="#visi-misi" class="hover:text-growth-teal transition">Visi & Misi</a>
-          <a href="#kenali-kami" class="hover:text-growth-teal transition">Kenali Kami</a>
-          <a href="#perjalanan" class="hover:text-growth-teal transition">Perjalanan</a>
-          <a href="#tools" class="hover:text-growth-teal transition">Tools</a>
-          <a href="#kontak" class="px-4 py-2 rounded-xl bg-growth-navy text-white hover:opacity-90 transition">Hubungi Kami</a>
+        <nav class="hidden md:flex items-center gap-8">
+          <button class="tab-button active text-sm text-slate-700 pb-1" data-tab="pembuka">TAB 1 · PEMBUKA</button>
+          <button class="tab-button text-sm text-slate-700 pb-1" data-tab="siapa-kita">TAB 2 · SIAPA KITA</button>
+          <button class="tab-button text-sm text-slate-700 pb-1" data-tab="hubungi">TAB 3 · HUBUNGI KAMI</button>
         </nav>
+        <div class="md:hidden"><select id="mobileTabSelect" class="border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700"><option value="pembuka">Pembuka</option><option value="siapa-kita">Siapa Kita</option><option value="hubungi">Hubungi Kami</option></select></div>
       </div>
     </div>
   </header>
 
-  <main id="beranda">
-    <!-- Hero -->
-    <section class="relative overflow-hidden bg-gradient-to-b from-growth-cream to-white">
-      <div class="absolute inset-0 pointer-events-none opacity-70" aria-hidden="true">
-        <div class="absolute -top-28 -right-28 w-80 h-80 rounded-full bg-emerald-100 blur-3xl"></div>
-        <div class="absolute top-48 -left-24 w-72 h-72 rounded-full bg-amber-100 blur-3xl"></div>
-      </div>
-
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
-        <div class="grid lg:grid-cols-2 gap-12 items-center">
-          <div class="relative z-10 reveal">
-            <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-growth-teal/10 text-growth-teal text-xs font-semibold tracking-wide">
-              <span class="w-2 h-2 rounded-full bg-growth-teal"></span>
-              Platform Pendidikan Inklusif
-            </span>
-            <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-growth-navy">
-              Tumbuh Bersama,<br>
-              <span class="text-growth-teal">Belajar untuk Semua</span>
-            </h1>
-            <p class="mt-6 text-lg sm:text-xl leading-8 text-slate-600 max-w-2xl">
-              Mewujudkan pendidikan yang inklusif, ramah, dan setara untuk semua anak.
-            </p>
-            <p class="mt-4 text-base leading-7 text-slate-600 max-w-2xl">
-              Inclusive Growth hadir untuk mendukung perjalanan pendidikan yang inklusif melalui informasi yang mudah diakses, materi edukatif yang aplikatif, serta ruang berbagi bagi pendidik dan orang tua.
-            </p>
-            <div class="mt-8 flex flex-wrap gap-3">
-              <a href="#tools" class="px-5 py-3 rounded-xl bg-growth-teal text-white font-semibold shadow-card hover:shadow-soft transition">Jelajahi Tools</a>
-              <a href="#kenali-kami" class="px-5 py-3 rounded-xl bg-white border border-slate-200 text-growth-navy font-semibold hover:border-growth-teal hover:text-growth-teal transition">Kenali Kami</a>
+  <main>
+    <!-- TAB 1 — PEMBUKA -->
+    <section id="pembuka" class="tab-panel active">
+      <!-- Section 1 — Rangkuman -->
+      <section class="relative overflow-hidden bg-gradient-to-b from-[#FCFBF7] to-white">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-14 sm:py-20 lg:py-24">
+          <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="reveal">
+              <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-semibold tracking-wide bg-emerald-50 text-[#2E7D6B]"><span class="w-2 h-2 rounded-full bg-[#2E7D6B]"></span>Platform Pendidikan Inklusif</span>
+              <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] text-[#1F3B57]">Tumbuh Bersama,<br><span class="text-[#2E7D6B]">Belajar untuk Semua</span></h1>
+              <p class="mt-6 text-lg sm:text-xl leading-8 text-slate-600 max-w-2xl">Mewujudkan Pendidikan yang Inklusif, Ramah, dan Setara untuk Semua Anak</p>
+              <p class="mt-4 text-base leading-7 text-slate-600 max-w-2xl">Inclusive Growth hadir untuk mendukung perjalanan pendidikan yang inklusif melalui informasi yang mudah diakses, materi edukatif yang aplikatif, serta ruang berbagi bagi pendidik dan orang tua. Kami percaya setiap anak berhak mendapatkan kesempatan belajar yang setara, terlepas dari perbedaan kemampuan maupun latar belakangnya. Melalui website ini, kami mengajak pendidik, orang tua, dan masyarakat luas untuk bersama-sama membangun lingkungan belajar yang ramah, suportif, dan penuh penerimaan.</p>
+              <div class="mt-8 text-sm text-slate-500"><span class="font-semibold text-[#1F3B57]">Dr. Swasto Imam Teguh Prabowo</span></div>
             </div>
-            <div class="mt-7 text-sm text-slate-500">
-              <span class="font-semibold text-growth-navy">Dr. Swasto Imam Teguh Prabowo</span>
-            </div>
-          </div>
-
-          <!-- SVG Hero Illustration -->
-          <div class="relative reveal">
-            <div class="rounded-[2rem] bg-white border border-slate-100 shadow-soft p-4 sm:p-6">
-              <svg viewBox="0 0 720 560" class="w-full h-auto" role="img" aria-label="Ilustrasi anak, pendidik, keluarga, dan komunitas dalam ekosistem pendidikan inklusif">
-                <defs>
-                  <linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1">
-                    <stop offset="0%" stop-color="#EFF7F3"/>
-                    <stop offset="100%" stop-color="#FFF8E8"/>
-                  </linearGradient>
-                  <filter id="softShadow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1F3B57" flood-opacity=".10"/>
-                  </filter>
-                </defs>
-
-                <rect x="12" y="12" width="696" height="536" rx="42" fill="url(#heroBg)"/>
-                <path d="M112 363C190 308 247 303 329 343C410 383 485 369 596 295" class="line-draw" fill="none" stroke="#2E7D6B" stroke-width="3" opacity=".32"/>
-                <path d="M140 232C213 188 278 185 351 226C423 266 493 245 578 189" class="line-draw" fill="none" stroke="#C08A2E" stroke-width="3" opacity=".28"/>
-
-                <g class="float-a" filter="url(#softShadow)">
-                  <circle cx="126" cy="155" r="55" fill="#FFFFFF"/>
-                  <circle cx="112" cy="150" r="20" fill="#E9B77D"/>
-                  <path d="M92 145c4-25 36-31 45-10-8 4-17 9-25 18z" fill="#3A2B23"/>
-                  <path d="M96 175c9-14 25-17 38-9 8 5 15 14 17 29h-67c2-8 5-14 12-20Z" fill="#2E7D6B"/>
-                  <circle cx="104" cy="151" r="2.4" fill="#24313B"/>
-                  <circle cx="118" cy="151" r="2.4" fill="#24313B"/>
-                </g>
-
-                <g class="float-b" filter="url(#softShadow)">
-                  <circle cx="596" cy="178" r="55" fill="#FFFFFF"/>
-                  <circle cx="582" cy="173" r="20" fill="#8C5D48"/>
-                  <path d="M560 168c4-25 35-28 46-7-11 3-22 8-32 18z" fill="#2B2424"/>
-                  <path d="M561 199c13-16 34-17 48-7 7 6 12 15 14 26h-74c2-8 5-14 12-19Z" fill="#1F3B57"/>
-                  <circle cx="575" cy="174" r="2.4" fill="#24313B"/>
-                  <circle cx="589" cy="174" r="2.4" fill="#24313B"/>
-                </g>
-
-                <!-- central community -->
-                <g filter="url(#softShadow)">
-                  <circle cx="360" cy="270" r="116" fill="#FFFFFF"/>
-                  <circle cx="360" cy="258" r="46" fill="#F1E6D3"/>
-                  <path d="M326 248c6-44 59-54 80-17-17 2-35 10-49 27z" fill="#3B2E2A"/>
-                  <circle cx="345" cy="262" r="3" fill="#24313B"/>
-                  <circle cx="376" cy="262" r="3" fill="#24313B"/>
-                  <path d="M349 284c8 7 16 8 24 0" fill="none" stroke="#9B654E" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M314 341c16-44 74-53 101-19 9 11 14 24 17 44H297c3-10 8-18 17-25Z" fill="#2E7D6B"/>
-                  <path d="M298 348c-24-8-45-2-59 14" fill="none" stroke="#2E7D6B" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M422 348c24-8 45-2 59 14" fill="none" stroke="#C08A2E" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M262 364l-36 23M458 364l36 23" stroke="#24313B" stroke-width="9" stroke-linecap="round"/>
-                </g>
-
-                <!-- small children -->
-                <g filter="url(#softShadow)">
-                  <circle cx="198" cy="388" r="44" fill="#FFFFFF"/>
-                  <circle cx="188" cy="380" r="16" fill="#B8765E"/>
-                  <path d="M173 374c7-20 30-19 37-2-8 1-16 6-22 13z" fill="#2D2624"/>
-                  <path d="M175 402c10-14 27-15 37-4 6 6 8 13 10 24h-58c1-8 5-15 11-20Z" fill="#C08A2E"/>
-                </g>
-
-                <g filter="url(#softShadow)">
-                  <circle cx="520" cy="402" r="44" fill="#FFFFFF"/>
-                  <circle cx="508" cy="395" r="16" fill="#E2B486"/>
-                  <path d="M493 389c7-18 31-19 39-1-9 2-17 7-23 14z" fill="#6C4938"/>
-                  <path d="M495 417c11-14 28-15 38-4 6 7 9 15 10 26h-59c2-9 5-16 11-22Z" fill="#1F3B57"/>
-                </g>
-
-                <!-- labels -->
-                <g font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#1F3B57">
-                  <rect x="67" y="94" width="112" height="34" rx="17" fill="#FFFFFF"/>
-                  <text x="123" y="116" text-anchor="middle">Pendidik</text>
-                  <rect x="532" y="117" width="112" height="34" rx="17" fill="#FFFFFF"/>
-                  <text x="588" y="139" text-anchor="middle">Keluarga</text>
-                  <rect x="160" y="445" width="124" height="34" rx="17" fill="#FFFFFF"/>
-                  <text x="222" y="467" text-anchor="middle">Anak</text>
-                  <rect x="474" y="457" width="118" height="34" rx="17" fill="#FFFFFF"/>
-                  <text x="533" y="479" text-anchor="middle">Komunitas</text>
-                </g>
-              </svg>
-            </div>
-            <p class="text-xs text-slate-500 mt-3 text-center">
-              Ilustrasi pembuka — dapat diganti dengan foto dokumentasi tim/komunitas sesuai brief.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Vision -->
-    <section id="visi-misi" class="py-20 sm:py-24 bg-white">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="max-w-3xl mx-auto text-center reveal">
-          <span class="inline-flex px-3 py-1 rounded-full bg-growth-gold/10 text-growth-gold text-xs font-bold tracking-[.16em] uppercase">Arah Kami</span>
-          <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Visi Kami</h2>
-          <p class="mt-5 text-lg leading-8 text-slate-600">
-            Menjadi rujukan utama dalam mewujudkan ekosistem pendidikan inklusif di Indonesia, di mana setiap anak — apa pun kondisi dan kebutuhannya — memperoleh akses yang setara terhadap pendidikan berkualitas untuk tumbuh dan berkembang secara optimal.
-          </p>
-        </div>
-
-        <div class="mt-14 grid lg:grid-cols-2 gap-8 items-stretch">
-          <div class="rounded-3xl bg-growth-mist border border-emerald-100 p-8 sm:p-10 reveal">
-            <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-card text-growth-teal">
-              <svg viewBox="0 0 64 64" class="w-8 h-8" fill="none" aria-hidden="true">
-                <circle cx="32" cy="32" r="25" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M17 34c7-1 12 2 15 9 3-7 8-10 15-9M22 25c2-6 6-9 10-9s8 3 10 9" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <h3 class="mt-6 text-2xl font-extrabold text-growth-navy">Ekosistem yang saling terhubung</h3>
-            <p class="mt-3 text-slate-600 leading-7">
-              Pendidikan inklusif tumbuh melalui hubungan antara anak, pendidik, keluarga, tenaga ahli, dan masyarakat.
-            </p>
-          </div>
-
-          <div class="rounded-3xl bg-growth-cream border border-amber-100 p-8 sm:p-10 reveal">
-            <div class="w-14 h-14 rounded-2xl bg-white flex items-center justify-center shadow-card text-growth-gold">
-              <svg viewBox="0 0 64 64" class="w-8 h-8" fill="none" aria-hidden="true">
-                <circle cx="32" cy="32" r="24" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M22 39c2-8 5-12 10-12s8 4 10 12M26 24c0-4 2-7 6-7s6 3 6 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-              </svg>
-            </div>
-            <h3 class="mt-6 text-2xl font-extrabold text-growth-navy">Akses yang setara</h3>
-            <p class="mt-3 text-slate-600 leading-7">
-              Ruang belajar yang ramah dan suportif membantu setiap anak memperoleh kesempatan untuk berkembang.
-            </p>
-          </div>
-        </div>
-
-        <!-- Mission -->
-        <div class="mt-20">
-          <div class="text-center reveal">
-            <span class="inline-flex px-3 py-1 rounded-full bg-growth-teal/10 text-growth-teal text-xs font-bold tracking-[.16em] uppercase">Yang Kami Lakukan</span>
-            <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Misi Kami</h2>
-          </div>
-
-          <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            <div class="lift rounded-3xl p-7 border border-slate-200 bg-white reveal">
-              <div class="w-12 h-12 rounded-2xl bg-growth-teal/10 text-growth-teal flex items-center justify-center">
-                <span class="font-display font-extrabold text-xl">01</span>
-              </div>
-              <h3 class="mt-5 font-display font-extrabold text-xl text-growth-navy">Edukasi</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-600">Menyediakan konten edukasi dan pelatihan yang meningkatkan pemahaman pendidik dan orang tua tentang pendidikan inklusif.</p>
-            </div>
-
-            <div class="lift rounded-3xl p-7 border border-slate-200 bg-white reveal">
-              <div class="w-12 h-12 rounded-2xl bg-growth-gold/10 text-growth-gold flex items-center justify-center">
-                <span class="font-display font-extrabold text-xl">02</span>
-              </div>
-              <h3 class="mt-5 font-display font-extrabold text-xl text-growth-navy">Pendampingan</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-600">Mendampingi sekolah dan keluarga dalam menciptakan lingkungan belajar yang ramah bagi anak dengan beragam kebutuhan.</p>
-            </div>
-
-            <div class="lift rounded-3xl p-7 border border-slate-200 bg-white reveal">
-              <div class="w-12 h-12 rounded-2xl bg-growth-navy/10 text-growth-navy flex items-center justify-center">
-                <span class="font-display font-extrabold text-xl">03</span>
-              </div>
-              <h3 class="mt-5 font-display font-extrabold text-xl text-growth-navy">Kolaborasi</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-600">Membangun jejaring kolaborasi antara pendidik, orang tua, tenaga ahli, dan masyarakat untuk memperluas dampak pendidikan inklusif.</p>
-            </div>
-
-            <div class="lift rounded-3xl p-7 border border-slate-200 bg-white reveal">
-              <div class="w-12 h-12 rounded-2xl bg-slate-100 text-growth-navy flex items-center justify-center">
-                <span class="font-display font-extrabold text-xl">04</span>
-              </div>
-              <h3 class="mt-5 font-display font-extrabold text-xl text-growth-navy">Kesetaraan</h3>
-              <p class="mt-3 text-sm leading-6 text-slate-600">Mendorong kebijakan dan praktik sekolah yang berpihak pada kesetaraan akses pendidikan bagi seluruh anak.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Kenali Kami -->
-    <section id="kenali-kami" class="py-20 sm:py-24 bg-growth-mist">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-12 items-start">
-          <div class="reveal">
-            <span class="inline-flex px-3 py-1 rounded-full bg-growth-navy/10 text-growth-navy text-xs font-bold tracking-[.16em] uppercase">Siapa Kita</span>
-            <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Kenali Kami</h2>
-            <p class="mt-6 text-base leading-7 text-slate-600">
-              Inclusive Growth digagas oleh sekelompok pendidik, praktisi, dan pemerhati pendidikan yang meyakini bahwa keberagaman adalah kekuatan, bukan hambatan.
-            </p>
-            <p class="mt-4 text-base leading-7 text-slate-600">
-              Berangkat dari pengalaman mendampingi anak-anak dengan beragam kebutuhan belajar, kami membangun platform ini sebagai wadah berbagi ilmu, pengalaman, dan sumber daya bagi siapa pun yang ingin turut mewujudkan pendidikan yang lebih inklusif dan manusiawi.
-            </p>
-
-            <div class="mt-8 rounded-3xl bg-white border border-slate-200 p-7 shadow-card">
-              <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Nilai / Prinsip yang Kami Pegang</p>
-              <div class="mt-6 grid sm:grid-cols-2 gap-5">
-                <div class="flex gap-4">
-                  <div class="w-11 h-11 rounded-2xl bg-growth-teal/10 text-growth-teal flex items-center justify-center shrink-0">
-                    <span class="text-lg">≡</span>
-                  </div>
-                  <div>
-                    <h3 class="font-display font-extrabold text-growth-navy">Kesetaraan</h3>
-                    <p class="text-sm text-slate-600 mt-1 leading-6">Setiap anak berhak atas kesempatan belajar yang sama.</p>
-                  </div>
-                </div>
-
-                <div class="flex gap-4">
-                  <div class="w-11 h-11 rounded-2xl bg-growth-gold/10 text-growth-gold flex items-center justify-center shrink-0">
-                    <span class="text-lg">♡</span>
-                  </div>
-                  <div>
-                    <h3 class="font-display font-extrabold text-growth-navy">Empati</h3>
-                    <p class="text-sm text-slate-600 mt-1 leading-6">Memahami kebutuhan setiap individu tanpa menghakimi.</p>
-                  </div>
-                </div>
-
-                <div class="flex gap-4">
-                  <div class="w-11 h-11 rounded-2xl bg-growth-navy/10 text-growth-navy flex items-center justify-center shrink-0">
-                    <span class="text-lg">↔</span>
-                  </div>
-                  <div>
-                    <h3 class="font-display font-extrabold text-growth-navy">Kolaborasi</h3>
-                    <p class="text-sm text-slate-600 mt-1 leading-6">Pendidikan inklusif adalah tanggung jawab bersama.</p>
-                  </div>
-                </div>
-
-                <div class="flex gap-4">
-                  <div class="w-11 h-11 rounded-2xl bg-growth-teal/10 text-growth-teal flex items-center justify-center shrink-0">
-                    <span class="text-lg">◌</span>
-                  </div>
-                  <div>
-                    <h3 class="font-display font-extrabold text-growth-navy">Keberlanjutan</h3>
-                    <p class="text-sm text-slate-600 mt-1 leading-6">Perubahan yang bertahan lama dimulai dari edukasi yang konsisten.</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Community illustration / photo placeholder -->
-          <div class="reveal">
-            <div class="rounded-[2rem] bg-white border border-slate-200 p-5 shadow-card">
-              <div class="rounded-[1.5rem] border-2 border-dashed border-growth-teal/25 bg-growth-cream overflow-hidden">
-                <svg viewBox="0 0 640 460" class="w-full h-auto" role="img" aria-label="Ilustrasi komunitas pendidik dalam lokakarya pendidikan inklusif">
-                  <rect width="640" height="460" fill="#FCFBF7"/>
-                  <rect x="70" y="60" width="500" height="290" rx="28" fill="#EFF7F3"/>
-                  <path d="M105 325C183 263 228 274 301 309C361 337 426 344 522 284" stroke="#2E7D6B" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 10" fill="none"/>
-                  <rect x="120" y="205" width="400" height="22" rx="11" fill="#FFFFFF"/>
-                  <circle cx="170" cy="175" r="31" fill="#E8B27B"/>
-                  <path d="M142 169c8-39 50-46 71-15-16 3-33 10-45 24z" fill="#332925"/>
-                  <path d="M145 206c17-23 47-25 66-6 8 8 13 18 16 34H128c4-12 8-20 17-28Z" fill="#2E7D6B"/>
-                  <circle cx="280" cy="174" r="31" fill="#B97860"/>
-                  <path d="M253 168c6-37 49-45 70-14-17 3-31 10-45 23z" fill="#413631"/>
-                  <path d="M255 207c15-23 46-25 66-6 8 8 13 18 16 33H238c4-11 8-19 17-27Z" fill="#C08A2E"/>
-                  <circle cx="389" cy="174" r="31" fill="#D7A57E"/>
-                  <path d="M363 168c7-38 46-43 68-14-16 3-34 10-46 24z" fill="#2D2524"/>
-                  <path d="M363 207c17-23 47-25 67-6 8 8 13 19 15 33H345c4-11 8-19 18-27Z" fill="#1F3B57"/>
-                  <circle cx="498" cy="174" r="31" fill="#8D604B"/>
-                  <path d="M470 168c10-36 48-42 67-12-17 3-30 10-43 22z" fill="#2C2524"/>
-                  <path d="M472 206c15-23 46-26 67-5 7 7 13 19 15 33H454c3-12 8-20 18-28Z" fill="#2E7D6B"/>
-                  <path d="M150 250h345" stroke="#B6D5CA" stroke-width="8" stroke-linecap="round"/>
-                  <circle cx="177" cy="279" r="22" fill="#F0C399"/><path d="M157 293c12-18 34-18 44-1 4 6 6 12 7 21h-57c1-8 3-13 6-20Z" fill="#1F3B57"/>
-                  <circle cx="305" cy="278" r="22" fill="#E1AF7F"/><path d="M285 293c12-18 33-18 43-1 4 6 6 12 7 21h-56c1-8 3-14 6-20Z" fill="#2E7D6B"/>
-                  <circle cx="437" cy="279" r="22" fill="#B7775E"/><path d="M417 293c12-18 34-18 44-1 4 6 6 12 7 21h-57c1-8 3-14 6-20Z" fill="#C08A2E"/>
-                  <text x="320" y="397" text-anchor="middle" fill="#1F3B57" font-family="Nunito, sans-serif" font-weight="800" font-size="24">Belajar • Berbagi • Bertumbuh</text>
+            <div class="reveal">
+              <div class="bg-white border border-slate-100 rounded-[2rem] p-4 sm:p-6 soft">
+                <svg viewBox="0 0 720 560" class="w-full h-auto" role="img" aria-label="Ekosistem pendidikan inklusif">
+                  <defs><linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EFF7F3"/><stop offset="100%" stop-color="#FFF8E8"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1F3B57" flood-opacity=".10"/></filter></defs>
+                  <rect x="10" y="10" width="700" height="540" rx="42" fill="url(#heroBg)"/>
+                  <path d="M110 364C190 308 252 306 330 343C414 384 489 367 600 294" class="line-draw" fill="none" stroke="#2E7D6B" stroke-width="3" opacity=".32"/>
+                  <path d="M135 232C214 188 276 185 350 226C427 267 494 244 585 188" class="line-draw" fill="none" stroke="#C08A2E" stroke-width="3" opacity=".28"/>
+                  <g filter="url(#shadow)"><circle cx="360" cy="270" r="116" fill="#fff"/><circle cx="360" cy="256" r="46" fill="#F1E6D3"/><path d="M326 247c6-43 59-54 80-17-17 2-35 10-49 27z" fill="#3B2E2A"/><circle cx="345" cy="262" r="3" fill="#24313B"/><circle cx="376" cy="262" r="3" fill="#24313B"/><path d="M349 284c8 7 16 8 24 0" fill="none" stroke="#9B654E" stroke-width="3" stroke-linecap="round"/><path d="M314 341c16-44 74-53 101-19 9 11 14 24 17 44H297c3-10 8-18 17-25Z" fill="#2E7D6B"/></g>
+                  <g filter="url(#shadow)"><circle cx="128" cy="154" r="50" fill="#fff"/><circle cx="114" cy="148" r="18" fill="#E9B77D"/><path d="M96 143c5-23 34-29 44-9-8 4-15 8-23 17z" fill="#3A2B23"/><path d="M98 176c9-13 24-16 37-8 7 5 12 12 15 25H86c3-8 6-12 12-17Z" fill="#1F3B57"/></g>
+                  <g filter="url(#shadow)"><circle cx="594" cy="178" r="50" fill="#fff"/><circle cx="580" cy="172" r="18" fill="#8C5D48"/><path d="M562 167c4-22 33-27 43-8-9 4-16 9-24 17z" fill="#2B2424"/><path d="M563 198c11-14 28-16 41-6 6 5 10 12 13 23H551c3-8 6-12 12-17Z" fill="#C08A2E"/></g>
+                  <g filter="url(#shadow)"><circle cx="202" cy="392" r="42" fill="#fff"/><circle cx="191" cy="385" r="15" fill="#B8765E"/><path d="M177 379c6-17 28-18 35-3-7 2-14 6-20 12z" fill="#2D2624"/><path d="M178 405c10-13 24-14 35-4 5 5 8 11 9 20h-53c1-7 4-12 9-16Z" fill="#2E7D6B"/></g>
+                  <g filter="url(#shadow)"><circle cx="520" cy="404" r="42" fill="#fff"/><circle cx="509" cy="396" r="15" fill="#E2B486"/><path d="M495 390c6-18 28-19 36-3-8 2-14 6-20 13z" fill="#6C4938"/><path d="M496 417c10-13 24-14 35-4 5 5 8 12 9 21h-54c1-7 4-12 10-17Z" fill="#1F3B57"/></g>
+                  <g font-family="Inter" font-size="14" font-weight="600" fill="#1F3B57"><rect x="67" y="95" width="120" height="34" rx="17" fill="#fff"/><text x="127" y="117" text-anchor="middle">Pendidik</text><rect x="534" y="116" width="112" height="34" rx="17" fill="#fff"/><text x="590" y="138" text-anchor="middle">Keluarga</text><rect x="151" y="449" width="118" height="34" rx="17" fill="#fff"/><text x="210" y="471" text-anchor="middle">Anak</text><rect x="474" y="459" width="118" height="34" rx="17" fill="#fff"/><text x="533" y="481" text-anchor="middle">Komunitas</text></g>
                 </svg>
               </div>
-              <p class="text-xs text-slate-500 mt-4">
-                Visual dapat diganti dengan foto tim/komunitas saat pelatihan atau lokakarya sesuai materi brief.
-              </p>
+              <p class="text-xs text-slate-500 mt-3 text-center">Visual pembuka dapat diganti dengan foto dokumentasi sekolah/komunitas.</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+
+      <!-- Section 2 — Visi -->
+      <section class="py-20 bg-white">
+        <div class="max-w-5xl mx-auto px-5 sm:px-6 lg:px-8 text-center reveal">
+          <span class="inline-flex px-3 py-1 rounded-full bg-amber-50 text-[#C08A2E] text-xs font-bold tracking-[.16em] uppercase">Seksi 2</span>
+          <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Visi Kami</h2>
+          <p class="mt-6 text-lg leading-8 text-slate-600">Menjadi rujukan utama dalam mewujudkan ekosistem pendidikan inklusif di Indonesia, di mana setiap anak — apa pun kondisi dan kebutuhannya — memperoleh akses yang setara terhadap pendidikan berkualitas untuk tumbuh dan berkembang secara optimal.</p>
+          <div class="mt-8 flex justify-center"><div class="w-20 h-20 rounded-full border-4 border-[#2E7D6B]/15 bg-[#F4F8F6] flex items-center justify-center text-[#2E7D6B]"><svg viewBox="0 0 64 64" class="w-11 h-11" fill="none" aria-hidden="true"><circle cx="32" cy="32" r="24" stroke="currentColor" stroke-width="2.5"/><path d="M20 34c5-7 10-7 12 5 2-12 7-12 12-5M25 24c2-5 5-7 7-7s5 2 7 7" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg></div></div>
+        </div>
+      </section>
+
+      <!-- Section 3 — Misi -->
+      <section class="py-20 bg-[#F4F8F6]">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="text-center reveal"><span class="inline-flex px-3 py-1 rounded-full bg-emerald-50 text-[#2E7D6B] text-xs font-bold tracking-[.16em] uppercase">Seksi 3</span><h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Misi Kami</h2></div>
+          <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <article class="lift bg-white border border-slate-200 rounded-3xl p-7 reveal"><div class="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold bg-emerald-50 text-[#2E7D6B]">01</div><h3 class="mt-5 text-xl font-extrabold text-[#1F3B57]">Edukasi</h3><p class="mt-3 text-sm leading-6 text-slate-600">Menyediakan konten edukasi dan pelatihan yang meningkatkan pemahaman pendidik dan orang tua tentang pendidikan inklusif.</p></article>
+            <article class="lift bg-white border border-slate-200 rounded-3xl p-7 reveal"><div class="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold bg-amber-50 text-[#C08A2E]">02</div><h3 class="mt-5 text-xl font-extrabold text-[#1F3B57]">Pendampingan</h3><p class="mt-3 text-sm leading-6 text-slate-600">Mendampingi sekolah dan keluarga dalam menciptakan lingkungan belajar yang ramah bagi anak dengan beragam kebutuhan.</p></article>
+            <article class="lift bg-white border border-slate-200 rounded-3xl p-7 reveal"><div class="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold bg-slate-100 text-[#1F3B57]">03</div><h3 class="mt-5 text-xl font-extrabold text-[#1F3B57]">Kolaborasi</h3><p class="mt-3 text-sm leading-6 text-slate-600">Membangun jejaring kolaborasi antara pendidik, orang tua, tenaga ahli, dan masyarakat untuk memperluas dampak pendidikan inklusif.</p></article>
+            <article class="lift bg-white border border-slate-200 rounded-3xl p-7 reveal"><div class="w-12 h-12 rounded-2xl flex items-center justify-center font-extrabold bg-emerald-50 text-[#2E7D6B]">04</div><h3 class="mt-5 text-xl font-extrabold text-[#1F3B57]">Kesetaraan</h3><p class="mt-3 text-sm leading-6 text-slate-600">Mendorong kebijakan dan praktik sekolah yang berpihak pada kesetaraan akses pendidikan bagi seluruh anak.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Preserved four existing HTML tools -->
+      <section class="py-20 bg-white border-t border-slate-100">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="text-center max-w-3xl mx-auto reveal"><span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold tracking-[.16em] uppercase">Layanan Digital</span><h2 class="mt-4 text-3xl font-extrabold text-[#1F3B57]">Tools Inclusive Growth</h2><p class="mt-4 text-slate-600">Empat layanan digital yang tersedia dalam ekosistem platform.</p></div>
+          <div class="mt-10 grid md:grid-cols-2 xl:grid-cols-4 gap-6">
+            <a href="DSM 5 TR.html" class="lift bg-white border border-slate-200 border-t-4 border-t-emerald-600 rounded-3xl p-7 flex flex-col min-h-[300px] reveal"><div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center font-extrabold">01</div><h3 class="mt-6 text-xl font-extrabold text-slate-900">Skrining Gejala DSM-5-TR</h3><p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Asesmen gejala berbasis kriteria DSM-5-TR untuk identifikasi dini, penegakan diagnosis, dan formulasi klinis terstandarisasi.</p><span class="mt-5 text-sm font-bold text-emerald-700">Mulai Skrining →</span></a>
+            <a href="whodas.html" class="lift bg-white border border-slate-200 border-t-4 border-t-[#2E7D6B] rounded-3xl p-7 flex flex-col min-h-[300px] reveal"><div class="w-12 h-12 rounded-2xl bg-emerald-50 text-[#2E7D6B] flex items-center justify-center font-extrabold">02</div><h3 class="mt-6 text-xl font-extrabold text-slate-900">Assessment WHODAS 2.0</h3><p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Instrumen standar WHO (36-Item) untuk mengukur derajat disabilitas dan keterbatasan fungsional dalam 6 domain kehidupan utama.</p><span class="mt-5 text-sm font-bold text-[#2E7D6B]">Mulai Assessment →</span></a>
+            <a href="dashboard.html" class="lift bg-white border border-slate-200 border-t-4 border-t-blue-600 rounded-3xl p-7 flex flex-col min-h-[300px] reveal"><div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center font-extrabold">03</div><h3 class="mt-6 text-xl font-extrabold text-slate-900">Command Center Inklusi</h3><p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Dashboard monitoring real-time untuk pemetaan data, nilai dimensi inklusivitas, serta analisis tren inklusivitas sekolah secara terpusat.</p><span class="mt-5 text-sm font-bold text-blue-700">Buka Dashboard →</span></a>
+            <a href="report.html" class="lift bg-white border border-slate-200 border-t-4 border-t-indigo-600 rounded-3xl p-7 flex flex-col min-h-[300px] reveal"><div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-extrabold">04</div><h3 class="mt-6 text-xl font-extrabold text-indigo-900">Indeks Sekolah Inklusi</h3><p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Alat bantu pemetaan mandiri kondisi sekolah inklusif berdasarkan metode I.E 4.0. Petakan kekuatan dan arah pengembangan inklusi sekolah Anda secara sistematis.</p><span class="mt-5 text-sm font-bold text-indigo-700">Mulai Penilaian →</span></a>
+          </div>
+        </div>
+      </section>
     </section>
 
-    <!-- Journey -->
-    <section id="perjalanan" class="py-20 sm:py-24 bg-white">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="max-w-2xl reveal">
-          <span class="inline-flex px-3 py-1 rounded-full bg-growth-gold/10 text-growth-gold text-xs font-bold tracking-[.16em] uppercase">Profil / Perjalanan</span>
-          <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Perjalanan Kami</h2>
-          <p class="mt-5 text-slate-600 leading-7">
-            Inclusive Growth berawal dari keresahan atas masih terbatasnya akses informasi mengenai pendidikan inklusif di lingkungan sekolah dan keluarga. Dari diskusi-diskusi kecil antar pendidik, lahirlah inisiatif untuk menghimpun pengetahuan tersebut ke dalam satu platform yang mudah diakses siapa saja.
-          </p>
-          <p class="mt-4 text-slate-600 leading-7">
-            Seiring waktu, Inclusive Growth berkembang menjadi ruang belajar dan berjejaring bagi para pendidik, orang tua, dan komunitas yang peduli terhadap kesetaraan pendidikan.
-          </p>
-        </div>
-
-        <div class="relative mt-14">
-          <div class="hidden lg:block absolute left-0 right-0 top-7 h-1 rounded-full timeline-line"></div>
-          <div class="grid lg:grid-cols-4 gap-6">
-            <div class="relative reveal">
-              <div class="w-14 h-14 rounded-full bg-growth-teal text-white flex items-center justify-center font-display font-extrabold text-xl relative z-10">01</div>
-              <div class="mt-5 p-6 rounded-3xl bg-growth-mist border border-emerald-100">
-                <h3 class="font-display font-extrabold text-lg text-growth-navy">Inisiasi Komunitas</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Inisiasi komunitas dan penyusunan konsep awal platform edukasi inklusif.</p>
-              </div>
+    <!-- TAB 2 — SIAPA KITA -->
+    <section id="siapa-kita" class="tab-panel">
+      <!-- Section 1 — Kenali Kami -->
+      <section class="py-20 sm:py-24 bg-[#F4F8F6]">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="grid lg:grid-cols-2 gap-12 items-start">
+            <div class="reveal">
+              <span class="inline-flex px-3 py-1 rounded-full bg-slate-100 text-[#1F3B57] text-xs font-bold tracking-[.16em] uppercase">Seksi 1</span>
+              <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Kenali Kami</h2>
+              <p class="mt-6 text-base leading-7 text-slate-600">Inclusive Growth digagas oleh sekelompok pendidik, praktisi, dan pemerhati pendidikan yang meyakini bahwa keberagaman adalah kekuatan, bukan hambatan.</p>
+              <p class="mt-4 text-base leading-7 text-slate-600">Berangkat dari pengalaman mendampingi anak-anak dengan beragam kebutuhan belajar, kami membangun platform ini sebagai wadah berbagi ilmu, pengalaman, dan sumber daya bagi siapa pun yang ingin turut mewujudkan pendidikan yang lebih inklusif dan manusiawi.</p>
             </div>
-
-            <div class="relative reveal">
-              <div class="w-14 h-14 rounded-full bg-growth-gold text-white flex items-center justify-center font-display font-extrabold text-xl relative z-10">02</div>
-              <div class="mt-5 p-6 rounded-3xl bg-growth-cream border border-amber-100">
-                <h3 class="font-display font-extrabold text-lg text-growth-navy">Pelatihan & Lokakarya</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Penyelenggaraan pelatihan dan lokakarya perdana bagi pendidik di lingkungan sekolah mitra.</p>
+            <div class="reveal">
+              <div class="bg-white rounded-[2rem] border border-slate-200 p-5 soft">
+                <svg viewBox="0 0 640 430" class="w-full h-auto" role="img" aria-label="Ilustrasi tim dan komunitas Inclusive Growth dalam pelatihan">
+                  <rect width="640" height="430" rx="30" fill="#FCFBF7"/><rect x="70" y="58" width="500" height="278" rx="28" fill="#EFF7F3"/>
+                  <path d="M104 316C190 263 244 275 312 304C391 338 459 335 533 279" stroke="#2E7D6B" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 10" fill="none"/>
+                  <g><circle cx="170" cy="170" r="32" fill="#E8B27B"/><path d="M144 164c7-36 48-43 69-14-16 3-32 10-43 22z" fill="#332925"/><path d="M145 205c16-24 49-25 68-5 7 8 12 18 14 33h-97c3-12 7-19 15-28Z" fill="#2E7D6B"/>
+                  <circle cx="286" cy="170" r="32" fill="#B97860"/><path d="M260 164c7-35 47-43 68-13-16 2-32 10-44 22z" fill="#413631"/><path d="M261 205c16-23 48-25 68-5 7 8 12 18 14 33h-97c3-12 7-19 15-28Z" fill="#C08A2E"/>
+                  <circle cx="402" cy="170" r="32" fill="#D7A57E"/><path d="M377 164c7-35 46-43 67-13-15 3-31 10-43 22z" fill="#2D2524"/><path d="M378 205c16-23 47-25 67-5 7 8 12 18 14 33h-96c3-12 7-19 15-28Z" fill="#1F3B57"/>
+                  <circle cx="518" cy="170" r="32" fill="#8D604B"/><path d="M492 164c8-35 46-42 66-13-15 3-31 10-43 22z" fill="#2C2524"/><path d="M493 205c15-23 47-25 67-5 7 8 12 18 14 33h-97c3-12 7-19 16-28Z" fill="#2E7D6B"/></g>
+                  <rect x="132" y="244" width="376" height="20" rx="10" fill="#fff"/>
+                  <circle cx="205" cy="291" r="21" fill="#E2B486"/><path d="M186 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#1F3B57"/>
+                  <circle cx="320" cy="291" r="21" fill="#B8765E"/><path d="M301 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#2E7D6B"/>
+                  <circle cx="435" cy="291" r="21" fill="#E9B77D"/><path d="M416 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#C08A2E"/>
+                  <text x="320" y="386" text-anchor="middle" fill="#1F3B57" font-family="Nunito" font-size="24" font-weight="800">Belajar • Berbagi • Bertumbuh</text>
+                </svg>
               </div>
+              <p class="text-xs text-slate-500 mt-3">Visual dapat diganti dengan foto tim/komunitas saat kegiatan pelatihan atau lokakarya.</p>
             </div>
-
-            <div class="relative reveal">
-              <div class="w-14 h-14 rounded-full bg-growth-navy text-white flex items-center justify-center font-display font-extrabold text-xl relative z-10">03</div>
-              <div class="mt-5 p-6 rounded-3xl bg-white border border-slate-200">
-                <h3 class="font-display font-extrabold text-lg text-growth-navy">Modul Digital</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Pengembangan modul dan materi belajar inklusif yang dapat diakses publik secara daring.</p>
-              </div>
-            </div>
-
-            <div class="relative reveal">
-              <div class="w-14 h-14 rounded-full bg-growth-teal text-white flex items-center justify-center font-display font-extrabold text-xl relative z-10">04</div>
-              <div class="mt-5 p-6 rounded-3xl bg-growth-mist border border-emerald-100">
-                <h3 class="font-display font-extrabold text-lg text-growth-navy">Perluasan Jejaring</h3>
-                <p class="mt-2 text-sm leading-6 text-slate-600">Perluasan jejaring kerja sama dengan sekolah, orang tua, dan lembaga pemerhati pendidikan.</p>
-              </div>
+          </div>
+          <div class="mt-12 rounded-3xl bg-white border border-slate-200 p-7 sm:p-9 reveal">
+            <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Nilai / Prinsip yang Kami Pegang</p>
+            <div class="mt-6 grid md:grid-cols-4 gap-6">
+              <div><h3 class="font-extrabold text-[#1F3B57]">Kesetaraan</h3><p class="text-sm text-slate-600 mt-1 leading-6">Setiap anak berhak atas kesempatan belajar yang sama.</p></div>
+              <div><h3 class="font-extrabold text-[#1F3B57]">Empati</h3><p class="text-sm text-slate-600 mt-1 leading-6">Memahami kebutuhan setiap individu tanpa menghakimi.</p></div>
+              <div><h3 class="font-extrabold text-[#1F3B57]">Kolaborasi</h3><p class="text-sm text-slate-600 mt-1 leading-6">Pendidikan inklusif adalah tanggung jawab bersama.</p></div>
+              <div><h3 class="font-extrabold text-[#1F3B57]">Keberlanjutan</h3><p class="text-sm text-slate-600 mt-1 leading-6">Perubahan yang bertahan lama dimulai dari edukasi yang konsisten.</p></div>
             </div>
           </div>
         </div>
+      </section>
 
-        <div class="mt-12 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-7 sm:p-8 reveal">
-          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
-            <div>
-              <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Dokumen / Link Pendukung</p>
-              <p class="mt-2 text-slate-600">Profil kegiatan dan dokumentasi program dapat dilampirkan dalam bentuk PDF atau tautan Google Drive pada tahap pengembangan lebih lanjut.</p>
+      <!-- Section 2 — Perjalanan -->
+      <section class="py-20 sm:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="max-w-3xl reveal"><span class="inline-flex px-3 py-1 rounded-full bg-amber-50 text-[#C08A2E] text-xs font-bold tracking-[.16em] uppercase">Seksi 2</span><h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Perjalanan Kami</h2><p class="mt-5 text-slate-600 leading-7">Inclusive Growth berawal dari keresahan atas masih terbatasnya akses informasi mengenai pendidikan inklusif di lingkungan sekolah dan keluarga. Dari diskusi-diskusi kecil antar pendidik, lahirlah inisiatif untuk menghimpun pengetahuan tersebut ke dalam satu platform yang mudah diakses siapa saja.</p><p class="mt-4 text-slate-600 leading-7">Seiring waktu, Inclusive Growth berkembang menjadi ruang belajar dan berjejaring bagi para pendidik, orang tua, dan komunitas yang peduli terhadap kesetaraan pendidikan.</p></div>
+          <div class="mt-14 relative">
+            <div class="hidden lg:block absolute left-0 right-0 top-7 h-1 rounded-full timeline-line"></div>
+            <div class="grid lg:grid-cols-4 gap-6">
+              <div class="relative reveal"><div class="w-14 h-14 rounded-full text-white flex items-center justify-center font-extrabold relative z-10 bg-[#2E7D6B]">01</div><div class="mt-5 p-6 rounded-3xl border border-slate-200 bg-white"><p class="text-sm leading-6 text-slate-600">Inisiasi komunitas dan penyusunan konsep awal platform edukasi inklusif.</p></div></div>
+              <div class="relative reveal"><div class="w-14 h-14 rounded-full text-white flex items-center justify-center font-extrabold relative z-10 bg-[#C08A2E]">02</div><div class="mt-5 p-6 rounded-3xl border border-slate-200 bg-white"><p class="text-sm leading-6 text-slate-600">Penyelenggaraan pelatihan dan lokakarya perdana bagi pendidik di lingkungan sekolah mitra.</p></div></div>
+              <div class="relative reveal"><div class="w-14 h-14 rounded-full text-white flex items-center justify-center font-extrabold relative z-10 bg-[#1F3B57]">03</div><div class="mt-5 p-6 rounded-3xl border border-slate-200 bg-white"><p class="text-sm leading-6 text-slate-600">Pengembangan modul dan materi belajar inklusif yang dapat diakses publik secara daring.</p></div></div>
+              <div class="relative reveal"><div class="w-14 h-14 rounded-full text-white flex items-center justify-center font-extrabold relative z-10 bg-[#2E7D6B]">04</div><div class="mt-5 p-6 rounded-3xl border border-slate-200 bg-white"><p class="text-sm leading-6 text-slate-600">Perluasan jejaring kerja sama dengan sekolah, orang tua, dan lembaga pemerhati pendidikan.</p></div></div>
             </div>
-            <span class="px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-semibold text-slate-500">Area dokumentasi</span>
           </div>
+          <div class="mt-12 rounded-3xl border border-dashed border-slate-300 bg-slate-50 p-7 reveal"><p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Dokumen / Link Pendukung</p><p class="mt-2 text-slate-600">Profil kegiatan dan dokumentasi program dapat dilampirkan dalam bentuk PDF atau tautan Google Drive pada tahap pengembangan lebih lanjut.</p></div>
         </div>
-      </div>
+      </section>
     </section>
 
-    <!-- Tools: preserve existing 4 HTML buttons -->
-    <section id="tools" class="py-20 sm:py-24 bg-growth-mist">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="text-center max-w-3xl mx-auto reveal">
-          <span class="inline-flex px-3 py-1 rounded-full bg-growth-teal/10 text-growth-teal text-xs font-bold tracking-[.16em] uppercase">Ruang Belajar Digital</span>
-          <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Tools yang Tersedia</h2>
-          <p class="mt-4 text-slate-600 leading-7">
-            Empat layanan yang saat ini tersedia sebagai bagian dari ekosistem Inclusive Growth.
-          </p>
-        </div>
-
-        <div class="mt-10 grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-          <a href="DSM 5 TR.html" class="lift bg-white border border-slate-200 border-t-4 border-t-emerald-600 rounded-3xl p-7 flex flex-col min-h-[310px] reveal">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center">
-              <span class="font-display font-extrabold">01</span>
-            </div>
-            <h3 class="mt-6 text-xl font-extrabold text-slate-900">Skrining Gejala DSM-5-TR</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Asesmen gejala berbasis kriteria DSM-5-TR untuk identifikasi dini, penegakan diagnosis, dan formulasi klinis terstandarisasi.</p>
-            <span class="mt-6 text-sm font-bold text-emerald-700">Mulai Skrining →</span>
-          </a>
-
-          <a href="whodas.html" class="lift bg-white border border-slate-200 border-t-4 border-t-growth-teal rounded-3xl p-7 flex flex-col min-h-[310px] reveal">
-            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-growth-teal flex items-center justify-center">
-              <span class="font-display font-extrabold">02</span>
-            </div>
-            <h3 class="mt-6 text-xl font-extrabold text-slate-900">Assessment WHODAS 2.0</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Instrumen standar WHO (36-Item) untuk mengukur derajat disabilitas dan keterbatasan fungsional dalam 6 domain kehidupan utama.</p>
-            <span class="mt-6 text-sm font-bold text-growth-teal">Mulai Assessment →</span>
-          </a>
-
-          <a href="dashboard.html" class="lift bg-white border border-slate-200 border-t-4 border-t-blue-600 rounded-3xl p-7 flex flex-col min-h-[310px] reveal">
-            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-700 flex items-center justify-center">
-              <span class="font-display font-extrabold">03</span>
-            </div>
-            <h3 class="mt-6 text-xl font-extrabold text-slate-900">Command Center Inklusi</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Dashboard monitoring real-time untuk pemetaan data, nilai dimensi inklusivitas, serta analisis tren inklusivitas sekolah secara terpusat.</p>
-            <span class="mt-6 text-sm font-bold text-blue-700">Buka Dashboard →</span>
-          </a>
-
-          <a href="report.html" class="lift bg-white border border-slate-200 border-t-4 border-t-indigo-600 rounded-3xl p-7 flex flex-col min-h-[310px] reveal">
-            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-700 flex items-center justify-center">
-              <span class="font-display font-extrabold">04</span>
-            </div>
-            <h3 class="mt-6 text-xl font-extrabold text-indigo-900">Indeks Sekolah Inklusi</h3>
-            <p class="mt-3 text-sm leading-6 text-slate-600 flex-grow">Alat bantu pemetaan mandiri kondisi sekolah inklusif berdasarkan metode I.E 4.0. Petakan kekuatan dan arah pengembangan inklusi sekolah Anda secara sistematis.</p>
-            <span class="mt-6 text-sm font-bold text-indigo-700">Mulai Penilaian →</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- Content spaces requested by brief -->
-    <section class="py-20 bg-white">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-1 reveal">
-            <span class="inline-flex px-3 py-1 rounded-full bg-growth-gold/10 text-growth-gold text-xs font-bold tracking-[.16em] uppercase">Pengembangan Lanjutan</span>
-            <h2 class="mt-4 text-3xl font-extrabold text-growth-navy">Ruang untuk belajar, berbagi, dan mendengar</h2>
-            <p class="mt-4 text-slate-600 leading-7">
-              Area berikut disiapkan untuk pengembangan berkala sesuai kebutuhan platform.
-            </p>
+    <!-- TAB 3 — HUBUNGI KAMI -->
+    <section id="hubungi" class="tab-panel">
+      <!-- Section 1 — Informasi Kontak -->
+      <section class="py-20 sm:py-24 bg-[#F4F8F6]">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="max-w-3xl reveal"><span class="inline-flex px-3 py-1 rounded-full bg-emerald-50 text-[#2E7D6B] text-xs font-bold tracking-[.16em] uppercase">Seksi 1</span><h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Hubungi Kami</h2><p class="mt-5 text-slate-600 leading-7">Untuk pertanyaan, kolaborasi, pelatihan, atau informasi lebih lanjut mengenai Inclusive Growth, silakan gunakan kontak yang tersedia.</p></div>
+          <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 reveal"><p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Email</p><a href="mailto:info@inclusivegrowth.id" class="mt-2 block font-semibold text-[#1F3B57] hover:text-[#2E7D6B]">info@inclusivegrowth.id</a></div>
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 reveal"><p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">WhatsApp</p><p class="mt-2 font-semibold text-[#1F3B57]">+62 812-xxxx-xxxx</p><p class="mt-1 text-xs text-slate-500">Nomor resmi tim perlu dilengkapi.</p></div>
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 reveal"><p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Alamat</p><p class="mt-2 font-semibold text-[#1F3B57]">Alamat kantor/sekretariat Inclusive Growth</p><p class="mt-1 text-xs text-slate-500">Alamat resmi perlu dilengkapi.</p></div>
+            <div class="bg-white border border-slate-200 rounded-3xl p-6 reveal"><p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Jam Operasional</p><p class="mt-2 font-semibold text-[#1F3B57]">Senin – Jumat, 09.00 – 17.00 WIB</p></div>
           </div>
+        </div>
+      </section>
 
-          <div class="lg:col-span-2 grid sm:grid-cols-2 gap-6">
-            <div class="rounded-3xl bg-growth-mist border border-emerald-100 p-7 reveal">
-              <div class="w-12 h-12 rounded-2xl bg-white text-growth-teal flex items-center justify-center shadow-card">
-                <svg viewBox="0 0 64 64" class="w-7 h-7" fill="none" aria-hidden="true"><rect x="12" y="10" width="40" height="44" rx="4" stroke="currentColor" stroke-width="2.5"/><path d="M20 22h24M20 31h24M20 40h15" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+      <!-- Section 2 — Media Sosial & Form Kontak -->
+      <section class="py-20 sm:py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
+          <div class="grid lg:grid-cols-2 gap-10 items-start">
+            <div class="reveal">
+              <span class="inline-flex px-3 py-1 rounded-full bg-amber-50 text-[#C08A2E] text-xs font-bold tracking-[.16em] uppercase">Seksi 2</span>
+              <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-[#1F3B57]">Media Sosial & Form Kontak</h2>
+              <div class="mt-8 grid sm:grid-cols-2 gap-4">
+                <div class="border border-slate-200 rounded-2xl p-5"><p class="text-xs uppercase tracking-[.12em] text-slate-500 font-bold">Instagram</p><p class="mt-2 font-semibold text-[#1F3B57]">@inclusivegrowth.id</p></div>
+                <div class="border border-slate-200 rounded-2xl p-5"><p class="text-xs uppercase tracking-[.12em] text-slate-500 font-bold">Facebook</p><p class="mt-2 font-semibold text-[#1F3B57]">Inclusive Growth</p></div>
+                <div class="border border-slate-200 rounded-2xl p-5"><p class="text-xs uppercase tracking-[.12em] text-slate-500 font-bold">LinkedIn</p><p class="mt-2 font-semibold text-[#1F3B57]">Inclusive Growth</p></div>
+                <div class="border border-slate-200 rounded-2xl p-5"><p class="text-xs uppercase tracking-[.12em] text-slate-500 font-bold">YouTube</p><p class="mt-2 font-semibold text-[#1F3B57]">Inclusive Growth</p></div>
               </div>
-              <h3 class="mt-5 text-xl font-extrabold text-growth-navy">Blog & Artikel</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Ruang untuk artikel dan panduan praktis yang dapat diperbarui berkala.</p>
-              <span class="mt-4 inline-block text-xs font-semibold uppercase tracking-wider text-slate-500">Akan dikembangkan</span>
+              <div class="mt-8 rounded-3xl bg-[#FCFBF7] border border-amber-100 p-6"><p class="text-sm text-slate-600 leading-6">Kanal sosial mengikuti akun resmi yang disediakan tim. Detail website lain belum ditentukan dalam brief.</p></div>
             </div>
 
-            <div class="rounded-3xl bg-growth-cream border border-amber-100 p-7 reveal">
-              <div class="w-12 h-12 rounded-2xl bg-white text-growth-gold flex items-center justify-center shadow-card">
-                <svg viewBox="0 0 64 64" class="w-7 h-7" fill="none" aria-hidden="true"><rect x="10" y="16" width="44" height="34" rx="5" stroke="currentColor" stroke-width="2.5"/><circle cx="24" cy="28" r="5" stroke="currentColor" stroke-width="2.5"/><path d="M16 44l11-10 8 7 8-9 7 12" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              </div>
-              <h3 class="mt-5 text-xl font-extrabold text-growth-navy">Galeri Kegiatan</h3>
-              <p class="mt-2 text-sm leading-6 text-slate-600">Ruang dokumentasi untuk pelatihan, lokakarya, dan kegiatan komunitas.</p>
-              <span class="mt-4 inline-block text-xs font-semibold uppercase tracking-wider text-slate-500">Menunggu dokumentasi tim</span>
-            </div>
-
-            <div class="sm:col-span-2 rounded-3xl bg-white border border-slate-200 p-7 reveal">
-              <div class="flex flex-col md:flex-row md:items-center gap-6">
-                <div class="w-12 h-12 rounded-2xl bg-growth-navy/10 text-growth-navy flex items-center justify-center shrink-0">
-                  <svg viewBox="0 0 64 64" class="w-7 h-7" fill="none" aria-hidden="true"><path d="M14 22h36v25H14z" stroke="currentColor" stroke-width="2.5"/><path d="M21 31h22M21 38h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
+            <div class="bg-white border border-slate-200 rounded-[2rem] p-6 sm:p-8 soft reveal">
+              <form id="contactForm" class="space-y-5">
+                <div class="grid sm:grid-cols-2 gap-5">
+                  <div><label for="name" class="block text-sm font-semibold text-slate-700 mb-2">Nama</label><input id="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-100 focus:border-[#2E7D6B]" placeholder="Nama lengkap"></div>
+                  <div><label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email</label><input id="email" type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-100 focus:border-[#2E7D6B]" placeholder="email@contoh.com"></div>
                 </div>
-                <div>
-                  <h3 class="text-xl font-extrabold text-growth-navy">Testimoni Pendidik & Orang Tua</h3>
-                  <p class="mt-2 text-sm leading-6 text-slate-600">Ruang untuk pengalaman pendidik maupun orang tua yang telah mengikuti program, pelatihan, atau kegiatan Inclusive Growth.</p>
-                  <span class="mt-3 inline-block text-xs font-semibold uppercase tracking-wider text-slate-500">Akan diisi setelah dokumentasi tersedia</span>
+                <div class="grid sm:grid-cols-2 gap-5">
+                  <div><label for="wa" class="block text-sm font-semibold text-slate-700 mb-2">Nomor WhatsApp</label><input id="wa" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-100 focus:border-[#2E7D6B]" placeholder="+62 ..."></div>
+                  <div><label for="subject" class="block text-sm font-semibold text-slate-700 mb-2">Subjek</label><input id="subject" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-100 focus:border-[#2E7D6B]" placeholder="Subjek pesan"></div>
                 </div>
-              </div>
+                <div><label for="message" class="block text-sm font-semibold text-slate-700 mb-2">Pesan</label><textarea id="message" rows="6" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-emerald-100 focus:border-[#2E7D6B]" placeholder="Tulis pesan Anda..."></textarea></div>
+                <button type="submit" class="w-full px-5 py-3.5 rounded-xl text-white font-semibold hover:opacity-90 transition" style="background:var(--teal)">Kirim Pesan</button>
+                <div id="successMessage" class="hidden rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 text-sm leading-6">Terima kasih telah menghubungi Inclusive Growth. Pesan Anda telah kami terima dan tim kami akan segera merespons dalam 1–2 hari kerja.</div>
+                <p class="text-xs text-slate-500">Form ini menampilkan konfirmasi di halaman. Integrasi pengiriman pesan dapat disambungkan pada tahap pengembangan berikutnya.</p>
+              </form>
             </div>
           </div>
         </div>
-      </div>
-    </section>
-
-    <!-- Contact -->
-    <section id="kontak" class="py-20 sm:py-24 bg-growth-mist">
-      <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-        <div class="grid lg:grid-cols-2 gap-10 items-start">
-          <div class="reveal">
-            <span class="inline-flex px-3 py-1 rounded-full bg-growth-teal/10 text-growth-teal text-xs font-bold tracking-[.16em] uppercase">Tab 3</span>
-            <h2 class="mt-4 text-3xl sm:text-4xl font-extrabold text-growth-navy">Hubungi Kami</h2>
-            <p class="mt-4 text-slate-600 leading-7">
-              Untuk pertanyaan, kolaborasi, pelatihan, atau informasi lebih lanjut mengenai Inclusive Growth, silakan gunakan kontak yang tersedia.
-            </p>
-
-            <div class="mt-8 space-y-4">
-              <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Email</p>
-                <a href="mailto:info@inclusivegrowth.id" class="mt-2 block font-semibold text-growth-navy hover:text-growth-teal">info@inclusivegrowth.id</a>
-              </div>
-
-              <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">WhatsApp</p>
-                <p class="mt-2 font-semibold text-growth-navy">+62 812-xxxx-xxxx</p>
-                <p class="mt-1 text-xs text-slate-500">Nomor resmi tim perlu dilengkapi.</p>
-              </div>
-
-              <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Alamat</p>
-                <p class="mt-2 font-semibold text-growth-navy">Alamat kantor/sekretariat Inclusive Growth</p>
-                <p class="mt-1 text-xs text-slate-500">Alamat resmi perlu dilengkapi.</p>
-              </div>
-
-              <div class="bg-white border border-slate-200 rounded-2xl p-5">
-                <p class="text-xs uppercase tracking-[.14em] text-slate-500 font-bold">Jam Operasional</p>
-                <p class="mt-2 font-semibold text-growth-navy">Senin – Jumat, 09.00 – 17.00 WIB</p>
-              </div>
-            </div>
-
-            <div class="mt-6 flex flex-wrap gap-2">
-              <span class="px-3 py-2 rounded-full bg-white border border-slate-200 text-sm text-slate-600">Instagram: @inclusivegrowth.id</span>
-              <span class="px-3 py-2 rounded-full bg-white border border-slate-200 text-sm text-slate-600">Facebook: Inclusive Growth</span>
-              <span class="px-3 py-2 rounded-full bg-white border border-slate-200 text-sm text-slate-600">LinkedIn: Inclusive Growth</span>
-              <span class="px-3 py-2 rounded-full bg-white border border-slate-200 text-sm text-slate-600">YouTube: Inclusive Growth</span>
-            </div>
-          </div>
-
-          <div class="rounded-[2rem] bg-white border border-slate-200 shadow-soft p-6 sm:p-8 reveal">
-            <div class="mb-6">
-              <p class="text-xs uppercase tracking-[.14em] text-growth-teal font-bold">Formulir Kontak</p>
-              <h3 class="mt-2 text-2xl font-extrabold text-growth-navy">Mari terhubung</h3>
-            </div>
-
-            <form id="contactForm" class="space-y-5">
-              <div class="grid sm:grid-cols-2 gap-5">
-                <div>
-                  <label for="name" class="block text-sm font-semibold text-slate-700 mb-2">Nama</label>
-                  <input id="name" name="name" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-growth-teal/20 focus:border-growth-teal" placeholder="Nama lengkap">
-                </div>
-                <div>
-                  <label for="email" class="block text-sm font-semibold text-slate-700 mb-2">Email</label>
-                  <input id="email" name="email" type="email" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-growth-teal/20 focus:border-growth-teal" placeholder="email@contoh.com">
-                </div>
-              </div>
-
-              <div class="grid sm:grid-cols-2 gap-5">
-                <div>
-                  <label for="whatsapp" class="block text-sm font-semibold text-slate-700 mb-2">Nomor WhatsApp</label>
-                  <input id="whatsapp" name="whatsapp" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-growth-teal/20 focus:border-growth-teal" placeholder="+62 ...">
-                </div>
-                <div>
-                  <label for="subject" class="block text-sm font-semibold text-slate-700 mb-2">Subjek</label>
-                  <input id="subject" name="subject" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-growth-teal/20 focus:border-growth-teal" placeholder="Tentang apa?">
-                </div>
-              </div>
-
-              <div>
-                <label for="message" class="block text-sm font-semibold text-slate-700 mb-2">Pesan</label>
-                <textarea id="message" name="message" rows="6" required class="w-full px-4 py-3 rounded-xl border border-slate-200 outline-none focus:ring-2 focus:ring-growth-teal/20 focus:border-growth-teal" placeholder="Tulis pesan Anda..."></textarea>
-              </div>
-
-              <button type="submit" class="w-full px-5 py-3.5 rounded-xl bg-growth-teal text-white font-semibold hover:opacity-90 transition">Kirim Pesan</button>
-
-              <div id="successMessage" class="hidden rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 px-4 py-3 text-sm leading-6">
-                Terima kasih telah menghubungi Inclusive Growth. Pesan Anda telah kami terima dan tim kami akan segera merespons dalam 1–2 hari kerja.
-              </div>
-
-              <p class="text-xs text-slate-500">
-                Form ini menampilkan konfirmasi di halaman. Integrasi pengiriman email dapat disambungkan pada tahap pengembangan berikutnya.
-              </p>
-            </form>
-          </div>
-        </div>
-      </div>
+      </section>
     </section>
   </main>
 
-  <footer class="bg-growth-navy text-white">
-    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-12">
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        <div class="lg:col-span-2">
-          <div class="font-display font-extrabold text-2xl">Inclusive Growth</div>
-          <p class="mt-3 text-slate-300 max-w-xl leading-7">
-            Platform Pendidikan Inklusif untuk Pendidik, Orang Tua, dan Masyarakat.
-          </p>
-          <p class="mt-5 text-sm text-slate-400">Dr. Swasto Imam Teguh Prabowo</p>
-        </div>
-
-        <div>
-          <h3 class="font-display font-extrabold text-lg">Navigasi</h3>
-          <div class="mt-4 space-y-2 text-sm text-slate-300">
-            <a href="#visi-misi" class="block hover:text-white">Visi & Misi</a>
-            <a href="#kenali-kami" class="block hover:text-white">Kenali Kami</a>
-            <a href="#perjalanan" class="block hover:text-white">Perjalanan Kami</a>
-            <a href="#tools" class="block hover:text-white">Tools</a>
-            <a href="#kontak" class="block hover:text-white">Hubungi Kami</a>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="font-display font-extrabold text-lg">Kontak</h3>
-          <div class="mt-4 space-y-2 text-sm text-slate-300">
-            <a href="mailto:info@inclusivegrowth.id" class="block hover:text-white">info@inclusivegrowth.id</a>
-            <div>+62 812-xxxx-xxxx</div>
-            <div>Senin – Jumat, 09.00 – 17.00 WIB</div>
-          </div>
-        </div>
+  <footer class="bg-[#1F3B57] text-white">
+    <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8 py-10">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+        <div><div class="text-2xl font-extrabold" style="font-family:Nunito">Inclusive Growth</div><p class="mt-2 text-slate-300 text-sm">Platform Pendidikan Inklusif untuk Pendidik, Orang Tua, dan Masyarakat</p></div>
+        <div class="text-sm text-slate-400">Dr. Swasto Imam Teguh Prabowo</div>
       </div>
-
-      <div class="mt-10 pt-6 border-t border-white/10 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between text-xs text-slate-400">
-        <span>© 2026 Inclusive Growth. Tumbuh bersama, belajar untuk semua.</span>
-        <span>Konten kontak dan kanal resmi mengikuti informasi yang disediakan tim.</span>
-      </div>
+      <div class="mt-7 pt-5 border-t border-white/10 text-xs text-slate-400">© 2026 Inclusive Growth. Tumbuh bersama, belajar untuk semua.</div>
     </div>
   </footer>
 
   <script>
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('is-visible');
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
-
-    document.getElementById('contactForm').addEventListener('submit', function (event) {
-      event.preventDefault();
-      document.getElementById('successMessage').classList.remove('hidden');
-      this.reset();
-      document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    });
+    const panels=document.querySelectorAll('.tab-panel');
+    const buttons=document.querySelectorAll('.tab-button');
+    const mobileSelect=document.getElementById('mobileTabSelect');
+    let revealObserver;
+    function observeReveals(scope){
+      scope.querySelectorAll('.reveal').forEach(el=>{if(el.dataset.revealReady)return;el.dataset.revealReady='1';revealObserver.observe(el)});
+    }
+    revealObserver=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('is-visible');revealObserver.unobserve(entry.target)}})},{threshold:.12});
+    function switchTab(tabId){
+      panels.forEach(panel=>panel.classList.toggle('active',panel.id===tabId));
+      buttons.forEach(button=>button.classList.toggle('active',button.dataset.tab===tabId));
+      if(mobileSelect)mobileSelect.value=tabId;
+      const active=document.getElementById(tabId);
+      if(active){observeReveals(active);window.scrollTo({top:0,behavior:'smooth'})}
+    }
+    buttons.forEach(button=>button.addEventListener('click',()=>switchTab(button.dataset.tab)));
+    mobileSelect.addEventListener('change',e=>switchTab(e.target.value));
+    observeReveals(document.getElementById('pembuka'));
+    document.getElementById('contactForm').addEventListener('submit',function(e){e.preventDefault();const msg=document.getElementById('successMessage');msg.classList.remove('hidden');this.reset();msg.scrollIntoView({behavior:'smooth',block:'nearest'})});
   </script>
 </body>
 </html>
