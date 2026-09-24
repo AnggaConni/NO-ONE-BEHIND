@@ -28,15 +28,12 @@
     <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
       <div class="h-20 flex items-center justify-between gap-6">
         <a href="#" onclick="switchTab('pembuka');return false;" class="flex items-center gap-3">
-          <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-white" style="background:var(--teal)">
-            <svg viewBox="0 0 48 48" class="w-7 h-7" fill="none" aria-hidden="true"><path d="M24 38c7-9 11-15 11-21A11 11 0 0 0 24 6 11 11 0 0 0 13 17c0 6 4 12 11 21Z" stroke="currentColor" stroke-width="2.4"/><path d="M24 24c-5-1-8-3-10-7M24 24c5-1 8-3 10-7M24 24v10" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-          </div>
-          <div><div class="font-extrabold text-xl leading-none" style="font-family:Nunito;color:var(--navy)">Inclusive Growth</div><div class="text-[11px] tracking-[.18em] uppercase text-slate-500 mt-1">Platform Pendidikan Inklusif</div></div>
+          <img src="thum/buttonhead.png" alt="Inclusive Growth" class="h-14 w-auto object-contain">
         </a>
         <nav class="hidden md:flex items-center gap-8">
-          <button class="tab-button active text-sm text-slate-700 pb-1" data-tab="pembuka">TAB 1 · PEMBUKA</button>
-          <button class="tab-button text-sm text-slate-700 pb-1" data-tab="siapa-kita">TAB 2 · SIAPA KITA</button>
-          <button class="tab-button text-sm text-slate-700 pb-1" data-tab="hubungi">TAB 3 · HUBUNGI KAMI</button>
+          <button class="tab-button active text-sm text-slate-700 font-bold pb-1" data-tab="pembuka">Pembuka</button>
+          <button class="tab-button text-sm text-slate-700 font-bold pb-1" data-tab="siapa-kita">Siapa Kita</button>
+          <button class="tab-button text-sm text-slate-700 font-bold pb-1" data-tab="hubungi">Hubungi Kami</button>
         </nav>
         <div class="md:hidden"><select id="mobileTabSelect" class="border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700"><option value="pembuka">Pembuka</option><option value="siapa-kita">Siapa Kita</option><option value="hubungi">Hubungi Kami</option></select></div>
       </div>
@@ -58,20 +55,12 @@
               <div class="mt-8 text-sm text-slate-500"><span class="font-semibold text-[#1F3B57]">Dr. Swasto Imam Teguh Prabowo</span></div>
             </div>
             <div class="reveal">
+
               <div class="bg-white border border-slate-100 rounded-[2rem] p-4 sm:p-6 soft">
-                <svg viewBox="0 0 720 560" class="w-full h-auto" role="img" aria-label="Ekosistem pendidikan inklusif">
-                  <defs><linearGradient id="heroBg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#EFF7F3"/><stop offset="100%" stop-color="#FFF8E8"/></linearGradient><filter id="shadow"><feDropShadow dx="0" dy="9" stdDeviation="12" flood-color="#1F3B57" flood-opacity=".10"/></filter></defs>
-                  <rect x="10" y="10" width="700" height="540" rx="42" fill="url(#heroBg)"/>
-                  <path d="M110 364C190 308 252 306 330 343C414 384 489 367 600 294" class="line-draw" fill="none" stroke="#2E7D6B" stroke-width="3" opacity=".32"/>
-                  <path d="M135 232C214 188 276 185 350 226C427 267 494 244 585 188" class="line-draw" fill="none" stroke="#C08A2E" stroke-width="3" opacity=".28"/>
-                  <g filter="url(#shadow)"><circle cx="360" cy="270" r="116" fill="#fff"/><circle cx="360" cy="256" r="46" fill="#F1E6D3"/><path d="M326 247c6-43 59-54 80-17-17 2-35 10-49 27z" fill="#3B2E2A"/><circle cx="345" cy="262" r="3" fill="#24313B"/><circle cx="376" cy="262" r="3" fill="#24313B"/><path d="M349 284c8 7 16 8 24 0" fill="none" stroke="#9B654E" stroke-width="3" stroke-linecap="round"/><path d="M314 341c16-44 74-53 101-19 9 11 14 24 17 44H297c3-10 8-18 17-25Z" fill="#2E7D6B"/></g>
-                  <g filter="url(#shadow)"><circle cx="128" cy="154" r="50" fill="#fff"/><circle cx="114" cy="148" r="18" fill="#E9B77D"/><path d="M96 143c5-23 34-29 44-9-8 4-15 8-23 17z" fill="#3A2B23"/><path d="M98 176c9-13 24-16 37-8 7 5 12 12 15 25H86c3-8 6-12 12-17Z" fill="#1F3B57"/></g>
-                  <g filter="url(#shadow)"><circle cx="594" cy="178" r="50" fill="#fff"/><circle cx="580" cy="172" r="18" fill="#8C5D48"/><path d="M562 167c4-22 33-27 43-8-9 4-16 9-24 17z" fill="#2B2424"/><path d="M563 198c11-14 28-16 41-6 6 5 10 12 13 23H551c3-8 6-12 12-17Z" fill="#C08A2E"/></g>
-                  <g filter="url(#shadow)"><circle cx="202" cy="392" r="42" fill="#fff"/><circle cx="191" cy="385" r="15" fill="#B8765E"/><path d="M177 379c6-17 28-18 35-3-7 2-14 6-20 12z" fill="#2D2624"/><path d="M178 405c10-13 24-14 35-4 5 5 8 11 9 20h-53c1-7 4-12 9-16Z" fill="#2E7D6B"/></g>
-                  <g filter="url(#shadow)"><circle cx="520" cy="404" r="42" fill="#fff"/><circle cx="509" cy="396" r="15" fill="#E2B486"/><path d="M495 390c6-18 28-19 36-3-8 2-14 6-20 13z" fill="#6C4938"/><path d="M496 417c10-13 24-14 35-4 5 5 8 12 9 21h-54c1-7 4-12 10-17Z" fill="#1F3B57"/></g>
-                  <g font-family="Inter" font-size="14" font-weight="600" fill="#1F3B57"><rect x="67" y="95" width="120" height="34" rx="17" fill="#fff"/><text x="127" y="117" text-anchor="middle">Pendidik</text><rect x="534" y="116" width="112" height="34" rx="17" fill="#fff"/><text x="590" y="138" text-anchor="middle">Keluarga</text><rect x="151" y="449" width="118" height="34" rx="17" fill="#fff"/><text x="210" y="471" text-anchor="middle">Anak</text><rect x="474" y="459" width="118" height="34" rx="17" fill="#fff"/><text x="533" y="481" text-anchor="middle">Komunitas</text></g>
-                </svg>
+                <img src="thum/tab%201.png" alt="Inclusive Growth — pendidikan inklusif di Indonesia" class="w-full h-auto rounded-[1.5rem] object-cover">
               </div>
+              <p class="text-xs text-slate-500 mt-3 text-center">Ilustrasi pembuka — inklusi pendidikan dalam konteks Indonesia.</p>
+            </div>
               <p class="text-xs text-slate-500 mt-3 text-center">Visual pembuka dapat diganti dengan foto dokumentasi sekolah/komunitas.</p>
             </div>
           </div>
@@ -128,22 +117,10 @@
               <p class="mt-4 text-base leading-7 text-slate-600">Berangkat dari pengalaman mendampingi anak-anak dengan beragam kebutuhan belajar, kami membangun platform ini sebagai wadah berbagi ilmu, pengalaman, dan sumber daya bagi siapa pun yang ingin turut mewujudkan pendidikan yang lebih inklusif dan manusiawi.</p>
             </div>
             <div class="reveal">
-              <div class="bg-white rounded-[2rem] border border-slate-200 p-5 soft">
-                <svg viewBox="0 0 640 430" class="w-full h-auto" role="img" aria-label="Ilustrasi tim dan komunitas Inclusive Growth dalam pelatihan">
-                  <rect width="640" height="430" rx="30" fill="#FCFBF7"/><rect x="70" y="58" width="500" height="278" rx="28" fill="#EFF7F3"/>
-                  <path d="M104 316C190 263 244 275 312 304C391 338 459 335 533 279" stroke="#2E7D6B" stroke-width="4" stroke-linecap="round" stroke-dasharray="8 10" fill="none"/>
-                  <g><circle cx="170" cy="170" r="32" fill="#E8B27B"/><path d="M144 164c7-36 48-43 69-14-16 3-32 10-43 22z" fill="#332925"/><path d="M145 205c16-24 49-25 68-5 7 8 12 18 14 33h-97c3-12 7-19 15-28Z" fill="#2E7D6B"/>
-                  <circle cx="286" cy="170" r="32" fill="#B97860"/><path d="M260 164c7-35 47-43 68-13-16 2-32 10-44 22z" fill="#413631"/><path d="M261 205c16-23 48-25 68-5 7 8 12 18 14 33h-97c3-12 7-19 15-28Z" fill="#C08A2E"/>
-                  <circle cx="402" cy="170" r="32" fill="#D7A57E"/><path d="M377 164c7-35 46-43 67-13-15 3-31 10-43 22z" fill="#2D2524"/><path d="M378 205c16-23 47-25 67-5 7 8 12 18 14 33h-96c3-12 7-19 15-28Z" fill="#1F3B57"/>
-                  <circle cx="518" cy="170" r="32" fill="#8D604B"/><path d="M492 164c8-35 46-42 66-13-15 3-31 10-43 22z" fill="#2C2524"/><path d="M493 205c15-23 47-25 67-5 7 8 12 18 14 33h-97c3-12 7-19 16-28Z" fill="#2E7D6B"/></g>
-                  <rect x="132" y="244" width="376" height="20" rx="10" fill="#fff"/>
-                  <circle cx="205" cy="291" r="21" fill="#E2B486"/><path d="M186 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#1F3B57"/>
-                  <circle cx="320" cy="291" r="21" fill="#B8765E"/><path d="M301 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#2E7D6B"/>
-                  <circle cx="435" cy="291" r="21" fill="#E9B77D"/><path d="M416 303c11-17 30-17 39-1 4 6 6 11 7 20h-51c1-7 3-13 5-19Z" fill="#C08A2E"/>
-                  <text x="320" y="386" text-anchor="middle" fill="#1F3B57" font-family="Nunito" font-size="24" font-weight="800">Belajar • Berbagi • Bertumbuh</text>
-                </svg>
+<div class="bg-white rounded-[2rem] border border-slate-200 p-5 soft">
+                <img src="thum/tab%202.png" alt="Tim dan komunitas Inclusive Growth dalam kegiatan pelatihan atau lokakarya" class="w-full h-auto rounded-[1.5rem] object-cover">
               </div>
-              <p class="text-xs text-slate-500 mt-3">Visual dapat diganti dengan foto tim/komunitas saat kegiatan pelatihan atau lokakarya.</p>
+              <p class="text-xs text-slate-500 mt-3">Tim Inclusive Growth bersama para pendidik dalam sesi pelatihan pendidikan inklusif.</p>
             </div>
           </div>
           <div class="mt-12 rounded-3xl bg-white border border-slate-200 p-7 sm:p-9 reveal">
