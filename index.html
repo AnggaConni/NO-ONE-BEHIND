@@ -55,11 +55,17 @@
 <body>
   <header class="sticky top-0 z-50 bg-white/95 backdrop-blur border-b border-slate-200">
     <div class="max-w-7xl mx-auto px-5 sm:px-6 lg:px-8">
-      <div class="h-20 flex items-center justify-between gap-6">
-        <a href="#" onclick="switchTab('pembuka');return false;" class="flex items-center gap-3">
-          <img src="thum/buttonhead.png" alt="Inclusive Growth" class="h-14 w-auto object-contain">
+      <div class="h-20 sm:h-[88px] flex items-center justify-between gap-6">
+        <a href="#" onclick="switchTab('pembuka');return false;" class="flex items-center gap-4 group">
+          <div class="flex items-center justify-center shrink-0">
+            <img src="thum/buttonhead.png" alt="Inclusive Growth" class="w-[96px] sm:w-[108px] h-auto object-contain transition-transform duration-200 group-hover:scale-[1.02]">
+          </div>
+          <div class="hidden sm:block border-l border-slate-200 pl-4">
+            <div class="text-lg font-extrabold leading-tight" style="font-family:Nunito;color:var(--navy)">Inclusive Growth</div>
+            <div class="mt-1 text-[11px] tracking-[.16em] uppercase text-slate-500">Platform Pendidikan Inklusif</div>
+          </div>
         </a>
-        <nav class="hidden md:flex items-center gap-8">
+        <nav class="hidden md:flex items-center gap-9">
           <button class="tab-button active text-sm text-slate-700 font-bold pb-1" data-tab="pembuka">Pembuka</button>
           <button class="tab-button text-sm text-slate-700 font-bold pb-1" data-tab="siapa-kita">Siapa Kita</button>
           <button class="tab-button text-sm text-slate-700 font-bold pb-1" data-tab="hubungi">Hubungi Kami</button>
